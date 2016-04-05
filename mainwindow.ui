@@ -14,11 +14,14 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>-2</x>
-      <y>-1</y>
+      <x>0</x>
+      <y>0</y>
       <width>800</width>
       <height>480</height>
      </rect>
@@ -49,10 +52,6 @@ QTabWidget::pane {
     border-top: 2px solid #222;
 }
 
-/* move to the right by 5px */
-/*QTabWidget::tab-bar {
-    left: 5px; 
-}*/
 
 /* Style the tab using the tab sub-control. Note that
     it reads QTabBar _not_ QTabWidget */
@@ -67,7 +66,7 @@ QTabBar::tab {
     padding: 2px;
 }
 
-QTabBar::tab:selected, QTabBar::tab:hover {
+QTabBar::tab:selected {
     background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                stop: 0 #222 
                                stop: 1.0 #444);
@@ -76,10 +75,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
 QTabBar::tab:selected {
     border-color: #444;
     border-bottom-color: #222; /* same as pane color */
-}
-
-QTabBar::tab:!selected {
-    margin-top: 2px #222; /* make non-selected tabs look smaller */
 }
 
 /* make use of negative margins for overlapping tabs */
@@ -108,7 +103,7 @@ QTabBar::tab:only-one {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
