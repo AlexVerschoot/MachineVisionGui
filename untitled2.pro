@@ -23,6 +23,9 @@ FORMS    += mainwindow.ui
 target.path = /home/pi
 INSTALLS += target
 
-RESOURCES +=
+RESOURCES += \
+    images.qrc
 
-DISTFILES +=
+DISTFILES += \
+    images/icon_stop.png \
+    images/icon_play.png

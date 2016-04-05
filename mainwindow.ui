@@ -10,10 +10,23 @@
     <height>480</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <stylestrategy>PreferAntialias</stylestrategy>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="font">
+    <font>
+     <stylestrategy>PreferAntialias</stylestrategy>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
@@ -43,8 +56,11 @@
       <pointsize>28</pointsize>
       <weight>75</weight>
       <bold>true</bold>
-      <stylestrategy>NoAntialias</stylestrategy>
+      <stylestrategy>PreferAntialias</stylestrategy>
      </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
     </property>
     <property name="styleSheet">
      <string notr="true"> /* The tab widget frame */
@@ -64,6 +80,7 @@ QTabBar::tab {
     min-width: 262px;
 	min-height: 60 px;
     padding: 2px;
+	color : #888;
 }
 
 QTabBar::tab:selected {
@@ -96,6 +113,9 @@ QTabBar::tab:only-one {
     margin: 0; /* if there is only one tab, we don't want overlapping margins */
 }</string>
     </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
+    </property>
     <property name="tabPosition">
      <enum>QTabWidget::North</enum>
     </property>
@@ -109,6 +129,11 @@ QTabBar::tab:only-one {
      <bool>false</bool>
     </property>
     <widget class="QWidget" name="tab">
+     <property name="font">
+      <font>
+       <stylestrategy>PreferAntialias</stylestrategy>
+      </font>
+     </property>
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
@@ -119,8 +144,139 @@ margin : 0px;
 padding : 0px;</string>
      </property>
      <attribute name="title">
-      <string>Tab 1</string>
+      <string>Launcher</string>
      </attribute>
+     <widget class="QSlider" name="horizontalSlider">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>320</y>
+        <width>500</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>60</y>
+        <width>150</width>
+        <height>150</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton, QPushButton:focus{ background-color: #0a0; }
+QPushButton:focus:pressed{ background-color: #0f0; }
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="images.qrc">
+        <normaloff>:/new/prefix1/images/icon_play.png</normaloff>:/new/prefix1/images/icon_play.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>128</width>
+        <height>128</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>60</y>
+        <width>150</width>
+        <height>150</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton, QPushButton:focus{background-color: #a00; }
+QPushButton:focus:pressed{ background-color: #f00; }
+QPushButton{
+	
+}</string>
+      </property>
+      <property name="text">
+       <string notr="true"/>
+      </property>
+      <property name="icon">
+       <iconset resource="images.qrc">
+        <normaloff>:/new/prefix1/images/icon_stop.png</normaloff>:/new/prefix1/images/icon_stop.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>128</width>
+        <height>128</height>
+       </size>
+      </property>
+      <property name="shortcut">
+       <string notr="true"/>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="autoRepeat">
+       <bool>false</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>260</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>22</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color : #888;</string>
+      </property>
+      <property name="text">
+       <string>Speed :</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <property name="styleSheet">
@@ -130,7 +286,7 @@ margin : 0px;
 padding : 0px;</string>
      </property>
      <attribute name="title">
-      <string>Tab 2</string>
+      <string>Detector</string>
      </attribute>
     </widget>
     <widget class="QWidget" name="tab_3">
@@ -141,13 +297,15 @@ margin : 0px;
 padding : 0px;</string>
      </property>
      <attribute name="title">
-      <string>Page</string>
+      <string>Status</string>
      </attribute>
     </widget>
    </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>
