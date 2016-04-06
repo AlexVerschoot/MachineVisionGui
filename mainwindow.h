@@ -20,6 +20,8 @@ private slots:
 
     void on_launcherStopButton_clicked();
 
+    void on_launcherSpeedControl_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 };
