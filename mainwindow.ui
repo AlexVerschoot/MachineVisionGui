@@ -328,7 +328,7 @@ padding : 0px;</string>
        <rect>
         <x>420</x>
         <y>20</y>
-        <width>200</width>
+        <width>300</width>
         <height>25</height>
        </rect>
       </property>
@@ -344,7 +344,7 @@ padding : 0px;</string>
        <string>00:00:00</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_cpuTotalLabel">
@@ -607,6 +607,54 @@ background-color : #500;
       </property>
       <property name="value">
        <number>0</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_temperatureLabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>260</y>
+        <width>250</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Color : #888;</string>
+      </property>
+      <property name="text">
+       <string>SOC temperature : </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_temperature">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>260</y>
+        <width>300</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Color : #888;</string>
+      </property>
+      <property name="text">
+       <string>0 °C</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

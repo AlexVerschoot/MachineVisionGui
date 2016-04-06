@@ -52,7 +52,7 @@ void MainWindow::updateTime()
     ui->label_activeTime->setText(number);
 
 
-
+    //the cpu activity
     char buf[100];
     for (int x = 0; x < 5; ++x) {
         for (int y = 0; y < 4; ++y) {
@@ -60,41 +60,47 @@ void MainWindow::updateTime()
         }
     }
 
-        /*FILE * pFile = fopen ("/proc/stat" , "r");
-        for (int var = 0; var < 5; ++var) {
-            if (fgets(buf, sizeof buf, pFile) != NULL){
-                sscanf(buf,"%*s %Lf %Lf %Lf %Lf",&a[var][0],&a[var][1],&a[var][2],&a[var][3]);
-            }
-        }
-        fclose(pFile);
-        sleep(1);*/
-        FILE * pFile2 = fopen ("/proc/stat" , "r");
-        for (int var = 0; var < 5; ++var) {
-            if (fgets(buf, sizeof buf, pFile2) != NULL){
-                sscanf(buf,"%*s %Lf %Lf %Lf %Lf",&b[var][0],&b[var][1],&b[var][2],&b[var][3]);
-            }
-        }
-        fclose(pFile2);
-        for (int var = 0; var < 5; ++var) {
-            loadavg = ((b[var][0]+b[var][1]+b[var][2]) - (a[var][0]+a[var][1]+a[var][2])) / ((b[var][0]+b[var][1]+b[var][2]+b[var][3]) - (a[var][0]+a[var][1]+a[var][2]+a[var][3]));
 
-            switch (var) {
-            case 1:
-                ui->progress_cpu0->setValue(loadavg*100);
-                break;
-            case 2:
-                ui->progress_cpu1->setValue(loadavg*100);
-                break;
-            case 3:
-                ui->progress_cpu2->setValue(loadavg*100);
-                break;
-            case 4:
-                ui->progress_cpu3->setValue(loadavg*100);
-                break;
-            default:
-                ui->progress_cpuTotal->setValue(loadavg*100);
-                break;
-            }
+    FILE * pFile2 = fopen ("/proc/stat" , "r");
+    for (int var = 0; var < 5; ++var) {
+        if (fgets(buf, sizeof buf, pFile2) != NULL){
+            sscanf(buf,"%*s %Lf %Lf %Lf %Lf",&b[var][0],&b[var][1],&b[var][2],&b[var][3]);
         }
+    }
+    fclose(pFile2);
+    for (int var = 0; var < 5; ++var) {
+        loadavg = ((b[var][0]+b[var][1]+b[var][2]) - (a[var][0]+a[var][1]+a[var][2])) / ((b[var][0]+b[var][1]+b[var][2]+b[var][3]) - (a[var][0]+a[var][1]+a[var][2]+a[var][3]));
+
+        switch (var) {
+        case 1:
+            ui->progress_cpu0->setValue(loadavg*100);
+            break;
+        case 2:
+            ui->progress_cpu1->setValue(loadavg*100);
+            break;
+        case 3:
+            ui->progress_cpu2->setValue(loadavg*100);
+            break;
+        case 4:
+            ui->progress_cpu3->setValue(loadavg*100);
+            break;
+        default:
+            ui->progress_cpuTotal->setValue(loadavg*100);
+            break;
+        }
+    }
+
+    //the temperature
+    int tempe;
+    FILE * pFile3 = fopen ("/sys/class/thermal/thermal_zone0/temp" , "r");
+        if (fgets(buf, sizeof buf, pFile3) != NULL){
+            sscanf(buf,"%i",&tempe);
+            QString number ;//= number.number(tempe/1000);
+            ui->label_temperature->setText(number.number(tempe/1000)+" °C");
+        }else{
+            std::cout<<"could not read temp"<<std::endl;
+        }
+    fclose(pFile3);
+
 }
 
