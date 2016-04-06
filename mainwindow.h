@@ -29,6 +29,9 @@ private slots:
 private:
     QTimer timer;
     Ui::MainWindow *ui;
+
+    //for the cpu info
+    long double a[5][4], b[5][4], loadavg;
 };
 
 #endif // MAINWINDOW_H

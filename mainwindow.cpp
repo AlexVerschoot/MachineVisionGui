@@ -1,7 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "iostream"
 #include <QDateTime>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <iostream>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -41,10 +45,56 @@ void MainWindow::on_launcherSpeedControl_valueChanged(int value)
 
 void MainWindow::updateTime()
 {
-    runningTime = runningTime + 100;
-    //std::cout << "time active :" << runningTime << std::endl;
+    runningTime ++;
     //the arg is number, amount of numbers, decimal, what number
-    //this
+    //this updates the status time
     QString number = QString("%1:").arg((runningTime/3600), 2, 10, QChar('0')) + QString("%1:").arg((runningTime/60%60), 2, 10, QChar('0'))+QString("%1").arg(runningTime%60, 2, 10, QChar('0'));
     ui->label_activeTime->setText(number);
+
+
+
+    char buf[100];
+    for (int x = 0; x < 5; ++x) {
+        for (int y = 0; y < 4; ++y) {
+            a[x][y]=b[x][y];
+        }
+    }
+
+        /*FILE * pFile = fopen ("/proc/stat" , "r");
+        for (int var = 0; var < 5; ++var) {
+            if (fgets(buf, sizeof buf, pFile) != NULL){
+                sscanf(buf,"%*s %Lf %Lf %Lf %Lf",&a[var][0],&a[var][1],&a[var][2],&a[var][3]);
+            }
+        }
+        fclose(pFile);
+        sleep(1);*/
+        FILE * pFile2 = fopen ("/proc/stat" , "r");
+        for (int var = 0; var < 5; ++var) {
+            if (fgets(buf, sizeof buf, pFile2) != NULL){
+                sscanf(buf,"%*s %Lf %Lf %Lf %Lf",&b[var][0],&b[var][1],&b[var][2],&b[var][3]);
+            }
+        }
+        fclose(pFile2);
+        for (int var = 0; var < 5; ++var) {
+            loadavg = ((b[var][0]+b[var][1]+b[var][2]) - (a[var][0]+a[var][1]+a[var][2])) / ((b[var][0]+b[var][1]+b[var][2]+b[var][3]) - (a[var][0]+a[var][1]+a[var][2]+a[var][3]));
+
+            switch (var) {
+            case 1:
+                ui->progress_cpu0->setValue(loadavg*100);
+                break;
+            case 2:
+                ui->progress_cpu1->setValue(loadavg*100);
+                break;
+            case 3:
+                ui->progress_cpu2->setValue(loadavg*100);
+                break;
+            case 4:
+                ui->progress_cpu3->setValue(loadavg*100);
+                break;
+            default:
+                ui->progress_cpuTotal->setValue(loadavg*100);
+                break;
+            }
+        }
 }
+
