@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "iostream"
+#include <QDateTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,6 +41,10 @@ void MainWindow::on_launcherSpeedControl_valueChanged(int value)
 
 void MainWindow::updateTime()
 {
-    runningTime++;
-    std::cout << "time active :" << runningTime << std::endl;
+    runningTime = runningTime + 100;
+    //std::cout << "time active :" << runningTime << std::endl;
+    //the arg is number, amount of numbers, decimal, what number
+    //this
+    QString number = QString("%1:").arg((runningTime/3600), 2, 10, QChar('0')) + QString("%1:").arg((runningTime/60%60), 2, 10, QChar('0'))+QString("%1").arg(runningTime%60, 2, 10, QChar('0'));
+    ui->label_activeTime->setText(number);
 }
