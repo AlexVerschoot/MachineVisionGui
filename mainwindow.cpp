@@ -7,6 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //a timer that counts every second
+    connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+    timer.setInterval(1000);
+    timer.start();
 }
 
 MainWindow::~MainWindow()
@@ -31,4 +36,10 @@ void MainWindow::on_launcherSpeedControl_valueChanged(int value)
     //TODO include some serial communication with the arduino
     std::cout<<"speed in % : " <<value<<std::endl;
 
+}
+
+void MainWindow::updateTime()
+{
+    runningTime++;
+    std::cout << "time active :" << runningTime << std::endl;
 }
