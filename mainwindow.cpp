@@ -17,8 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
     timer.setInterval(1000);
     timer.start();
-
-    startMotor();
+    QTimer::singleShot(1, this, SLOT(startMotor()));
 }
 
 MainWindow::~MainWindow()
@@ -28,6 +27,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_launcherStartButton_clicked()
 {
+
+
     //TODO include some serial communication with the arduino
     std::cout<<"launcher should now start"<<std::endl;
 }
@@ -113,6 +114,6 @@ void MainWindow::on_servoMotorControl_valueChanged(int value)
 }
 
 void MainWindow::startMotor(){
+    //TODO make a settings menu where this can be redone
     motorController = new MotorControllerSec();
-
 }

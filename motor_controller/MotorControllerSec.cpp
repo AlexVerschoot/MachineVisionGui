@@ -6,26 +6,14 @@
  */
 
 #include "MotorControllerSec.h"
+#include "motorcontrollerstartdialog.h"
 
 MotorControllerSec::MotorControllerSec() {
-	serialPort = new SerialPort();
 
-	std::cout << "Please turn on the motor controller." << std::endl;
-	std::cout
-			<< "If the motor controller is already turned on, please restart it."
-			<< std::endl;
 
-	//init for when you start the controller
-	for (int var = 0; var < 15; ++var) {
-		serialPort->readPort();
-	}
+    MotorControllerStartDialog mcstd;
 
-	//write drive enable
-	sleep(1);
-	unsigned char temp[] = "SRF+ \r\n";
-	std::cout << "drive enabled" << std::endl;
-	serialPort->writePort(temp);
-	sleep(1);
+    serialPort = new SerialPort();
 
 }
 
