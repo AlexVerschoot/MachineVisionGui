@@ -13,9 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    motor_controller/MotorControllerSec.cpp \
+    motor_controller/SerialPort.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    motor_controller/MotorControllerSec.h \
+    motor_controller/SerialPort.h
 
 FORMS    += mainwindow.ui
 

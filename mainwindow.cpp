@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
     timer.setInterval(1000);
     timer.start();
+
+    startMotor();
 }
 
 MainWindow::~MainWindow()
@@ -104,3 +106,13 @@ void MainWindow::updateTime()
 
 }
 
+
+void MainWindow::on_servoMotorControl_valueChanged(int value)
+{
+    motorController->gotoPosition(value);
+}
+
+void MainWindow::startMotor(){
+    motorController = new MotorControllerSec();
+
+}
