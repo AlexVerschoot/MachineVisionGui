@@ -123,7 +123,7 @@ QTabBar::tab:only-one {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -241,8 +241,8 @@ QPushButton:focus:pressed{ background-color: #0f0; }
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="images.qrc">
-        <normaloff>:/new/prefix1/images/icon_play.png</normaloff>:/new/prefix1/images/icon_play.png</iconset>
+       <iconset resource="qtimages.qrc">
+        <normaloff>:/images/images/icon_play.png</normaloff>:/images/images/icon_play.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -283,8 +283,8 @@ QPushButton{
        <string notr="true"/>
       </property>
       <property name="icon">
-       <iconset resource="images.qrc">
-        <normaloff>:/new/prefix1/images/icon_stop.png</normaloff>:/new/prefix1/images/icon_stop.png</iconset>
+       <iconset resource="qtimages.qrc">
+        <normaloff>:/images/images/icon_stop.png</normaloff>:/images/images/icon_stop.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -804,7 +804,7 @@ background-color : #500;
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="images.qrc"/>
+  <include location="qtimages.qrc"/>
  </resources>
  <connections/>
 </ui>
