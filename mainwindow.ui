@@ -241,7 +241,7 @@ QPushButton:focus:pressed{ background-color: #0f0; }
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="qtimages.qrc">
+       <iconset>
         <normaloff>:/images/images/icon_play.png</normaloff>:/images/images/icon_play.png</iconset>
       </property>
       <property name="iconSize">
@@ -283,7 +283,7 @@ QPushButton{
        <string notr="true"/>
       </property>
       <property name="icon">
-       <iconset resource="qtimages.qrc">
+       <iconset>
         <normaloff>:/images/images/icon_stop.png</normaloff>:/images/images/icon_stop.png</iconset>
       </property>
       <property name="iconSize">

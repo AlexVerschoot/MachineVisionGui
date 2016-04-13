@@ -6,11 +6,17 @@ find_package(Qt5Widgets)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_INCLUDE_PATH)
 
 find_package(Qt5Core REQUIRED)
 
 qt5_add_resources(QT_RESOURCE qtimages.qrc)
-qt5_add_resources(QT_FORM mainwindow.ui)
+
+# This allows files that are not compiled to be added to a project
+add_custom_target(MyProjectSources SOURCES
+mainwindow.ui
+motor_controller/motorcontrollerstartdialog.ui
+)
 
 
 add_library(mainwindow mainwindow.cpp )

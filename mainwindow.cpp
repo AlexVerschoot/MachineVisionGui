@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
     timer.setInterval(1000);
     timer.start();
-    QTimer::singleShot(500, this, SLOT(startMotor()));
+    QTimer::singleShot(1, this, SLOT(startMotor()));
 }
 
 MainWindow::~MainWindow()
