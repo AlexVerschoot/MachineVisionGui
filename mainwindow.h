@@ -44,6 +44,8 @@ private:
 
     //for the cpu info
     long double a[5][4], b[5][4], loadavg;
+    //for the framerate
+    long framerateOld= 0;
 
     //the servo
     MotorControllerSec * motorController;

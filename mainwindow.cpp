@@ -118,6 +118,10 @@ void MainWindow::updateTime()
     }
     fclose(pFile3);
 
+    //the framerate
+    long framerateNew = mainCamera->getFrames();
+    ui->label_framerate->setText(number.number(framerateNew-framerateOld)+" fps");
+    framerateOld = framerateNew;
 }
 
 

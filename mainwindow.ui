@@ -123,7 +123,7 @@ QTabBar::tab:only-one {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -241,7 +241,7 @@ QPushButton:focus:pressed{ background-color: #0f0; }
        <string/>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="qtimages.qrc">
         <normaloff>:/images/images/icon_play.png</normaloff>:/images/images/icon_play.png</iconset>
       </property>
       <property name="iconSize">
@@ -283,7 +283,7 @@ QPushButton{
        <string notr="true"/>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="qtimages.qrc">
         <normaloff>:/images/images/icon_stop.png</normaloff>:/images/images/icon_stop.png</iconset>
       </property>
       <property name="iconSize">
@@ -793,6 +793,54 @@ background-color : #500;
       </property>
       <property name="text">
        <string>0 °C</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_frameratelabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>300</y>
+        <width>250</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Color : #888;</string>
+      </property>
+      <property name="text">
+       <string>Current framerate :</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_framerate">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>300</y>
+        <width>300</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Color : #888;</string>
+      </property>
+      <property name="text">
+       <string>0 fps</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

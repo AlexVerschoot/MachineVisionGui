@@ -14,6 +14,7 @@ public:
     ~CameraMain();
     void stopCamera();
     void startCamera();
+    long getFrames();
 
 
 private:

@@ -169,3 +169,9 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
     }
     */
 }
+
+
+//give back how many frames have been shown
+long CameraMain::getFrames(){
+    return frames;
+}
