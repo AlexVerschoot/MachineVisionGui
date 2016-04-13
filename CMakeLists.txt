@@ -39,7 +39,7 @@ add_library(mainwindow mainwindow.cpp )
 target_link_libraries (mainwindow Qt5::Widgets)
 
 
-add_executable(MyProject main.cpp motor_controller/MotorControllerSec.cpp motor_controller/SerialPort.cpp motor_controller/motorcontrollerstartdialog.cpp camera_controller/RaspiCamCV.c camera_controller/RaspiCLI.c camera_controller/RaspiCamControl.c ${QT_RESOURCE})
+add_executable(MyProject main.cpp motor_controller/MotorControllerSec.cpp motor_controller/SerialPort.cpp motor_controller/motorcontrollerstartdialog.cpp camera_controller/RaspiCamCV.c camera_controller/RaspiCLI.c camera_controller/RaspiCamControl.c camera_controller/cameramain ${QT_RESOURCE})
 target_link_libraries (MyProject mainwindow)
 target_link_libraries(MyProject m /opt/vc/lib/libmmal_core.so /opt/vc/lib/libmmal_util.so /opt/vc/lib/libmmal_vc_client.so /opt/vc/lib/libvcos.so /opt/vc/lib/libbcm_host.so /opt/vc/lib/libGLESv2.so /opt/vc/lib/libEGL.so  ${OpenCV_LIBS})
 

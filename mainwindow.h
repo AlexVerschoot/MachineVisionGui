@@ -5,10 +5,9 @@
 #include <QTimer>
 //Motor control
 #include "motor_controller/MotorControllerSec.h"
-//camera control
-#include "camera_controller/RaspiCamCV.h"
-#include <opencv/cv.h>
-#include <thread>
+#include "camera_controller/cameramain.h"
+
+
 
 
 
@@ -38,9 +37,6 @@ private slots:
 
     void startMotor();
 
-    void comparison_thread(cv::Mat ctimgs[2]);
-
-
 private:
 
     QTimer timer;
@@ -52,18 +48,8 @@ private:
     //the servo
     MotorControllerSec * motorController;
 
-    //motion detection values
-    //the minimum value to consider the pixel as different
-    const int THRESHOLD = 30;
-    //the amount of pixels that need to be different
-    const int SENSITIVITY = 10;
-    //remembers the total amount of detected motions
-    unsigned long amount_detected = 0;
-
-    //a boolean to know if the program has already initialized (read: if image1 is already an image)
-    bool initialized = false;
-    cv::Mat imgs [2];
-    long frames = 0;
+    //the camera
+    CameraMain * mainCamera;
 
 };
 
