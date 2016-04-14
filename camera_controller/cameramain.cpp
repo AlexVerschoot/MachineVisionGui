@@ -13,6 +13,9 @@ using namespace cv;
 using namespace std;
 CameraMain::CameraMain()
 {
+    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames);
+    t1.detach();
+
 }
 
 CameraMain::~CameraMain()
@@ -22,6 +25,16 @@ CameraMain::~CameraMain()
 
 void CameraMain::startCamera(){
     exit = 0;
+    std::cout<<"exit should now be zero"<<std::endl;
+}
+
+void CameraMain::stopCamera(){
+    exit = 1;
+    std::cout<<"exit should now be one"<<std::endl;
+}
+
+void  CameraMain::main_camera_thread(int * exit, int * frames){
+    *exit = 1;
 
     //TODO start the camera detection
     RASPIVID_CONFIG * config = (RASPIVID_CONFIG*) malloc(sizeof (RASPIVID_CONFIG));
@@ -33,61 +46,47 @@ void CameraMain::startCamera(){
     RaspiCamCvCapture * capture = (RaspiCamCvCapture *) raspiCamCvCreateCameraCapture2(0, config);
     free(config);
 
-    std::chrono::time_point<std::chrono::system_clock> start, end;
 
     //a boolean to know if the program has already initialized (read: if image1 is already an image)
     bool initialized = false;
     cv::Mat imgs [2];
 
 
-    cvNamedWindow("RaspiCamTest", 1);
-    start = std::chrono::system_clock::now();
-    do {
-        IplImage* img = raspiCamCvQueryFrame(capture);
-        cv::Mat image = cv::cvarrToMat(img);
+    //cvNamedWindow("RaspiCamTest", 1);
+    while(1){
+        while (*exit==0){
+            IplImage* img = raspiCamCvQueryFrame(capture);
+            cv::Mat image = cv::cvarrToMat(img);
 
 
-        //cvShowImage("RaspiCamTest", img);
-        if (initialized) {
-            imgs[1].copyTo(imgs[0]);
-            image.copyTo(imgs[1]);
-        } else {
-            //ensure camera is warmed up
-            if (frames > 5) {
-                initialized = true;
-                cout << "initialization done" << endl;
+            //cvShowImage("RaspiCamTest", img);
+            if (initialized) {
+                imgs[1].copyTo(imgs[0]);
+                image.copyTo(imgs[1]);
+            } else {
+                //ensure camera is warmed up
+                if (*frames > 5) {
+                    initialized = true;
+                    cout << "initialization done" << endl;
+                }
+                image.copyTo(imgs[0]);
+                image.copyTo(imgs[1]);
             }
-            image.copyTo(imgs[0]);
-            image.copyTo(imgs[1]);
+
+            //imshow("RaspiCamTest", imgs[1]);
+            std::thread t1(&CameraMain::comparison_thread ,this, imgs);
+            t1.detach();
+            *frames = *frames + 1; //*frames++ did some strange things, so changed it to this. Don't know why it did strange stuff.
         }
-
-        //imshow("RaspiCamTest", imgs[1]);
-        std::thread t1(&CameraMain::comparison_thread ,this, imgs);
-        t1.detach();
-        frames++;
-
-        char key = cvWaitKey(2);
-
-        //ESC to exit
-        if (key == 27) {
-            exit = 1;
-        }
+        usleep(1000);
+    }
 
 
-    } while (!exit);
 
-    end = std::chrono::system_clock::now();
-
-    std::chrono::duration<double> elapsed_seconds = end - start;
-
-    cout << "shown frames : " << frames << " | time : " << elapsed_seconds.count() << "s | fps : " << frames / elapsed_seconds.count() << endl;
-    cvDestroyWindow("RaspiCamTest");
+    //cvDestroyWindow("RaspiCamTest");
     raspiCamCvReleaseCapture(&capture);
 }
 
-void CameraMain::stopCamera(){
-    exit = 1;
-}
 
 //detect differences in the frame
 

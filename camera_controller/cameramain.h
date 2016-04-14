@@ -20,6 +20,8 @@ public:
 private:
     void comparison_thread(cv::Mat ctimgs[2]);
 
+    void main_camera_thread(int * exit, int * frames);
+
 
     //motion detection values
     //the minimum value to consider the pixel as different
@@ -30,7 +32,7 @@ private:
     unsigned long amount_detected = 0;
 
 
-    long frames = 0;
+    int frames = 0;
 
     //an int to stop
     int exit = 0;
