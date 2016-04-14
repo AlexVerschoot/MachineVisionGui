@@ -14,7 +14,7 @@ using namespace cv;
 using namespace std;
 CameraMain::CameraMain()
 {
-    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames);
+    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames, pwidth, pheight);
     t1.detach();
 
 }
@@ -34,13 +34,13 @@ void CameraMain::stopCamera(){
     std::cout<<"exit should now be one"<<std::endl;
 }
 
-void  CameraMain::main_camera_thread(int * exit, int * frames){
+void  CameraMain::main_camera_thread(int * exit, int * frames, int pwidth, int pheight){
     *exit = 1;
 
     //TODO start the camera detection
     RASPIVID_CONFIG * config = (RASPIVID_CONFIG*) malloc(sizeof (RASPIVID_CONFIG));
-    config->width = 320;
-    config->height = 240;
+    config->width = pwidth;
+    config->height = pheight;
     config->bitrate = 0; // zero: leave as default
     config->framerate = 90;
     config->monochrome = 1;
@@ -75,7 +75,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames){
             }
 
             //imshow("RaspiCamTest", imgs[1]);
-            std::thread t1(&CameraMain::comparison_thread ,this, imgs);
+            std::thread t1(&CameraMain::comparison_thread ,this, imgs, pwidth, pheight);
             t1.detach();
             *frames = *frames + 1; //*frames++ did some strange things, so changed it to this. Don't know why it did strange stuff.
         }
@@ -91,7 +91,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames){
 
 //detect differences in the frame
 
-void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
+void CameraMain::comparison_thread(cv::Mat ctimgs[2], int pwidth, int pheight) {
     //imshow("RaspiCamTest", ctimgs[1]);
     //TODO implement a max amount of threads, to prevent lagging behind
     //initiate the variable changed_pixels and ensure the value is 0
@@ -101,8 +101,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
     int intensity1;
     int difference;
     unsigned long amount_detected_thread;
-    for (int x = 0; x < 320; ++x) {
-        for (int y = 0; y < 240; ++y) {
+    for (int x = 0; x < pwidth; ++x) {
+        for (int y = 0; y < pheight; ++y) {
             //access the pixel
             intensity0 = (int) ctimgs[0].at<uchar>(y, x);
             intensity1 = (int) ctimgs[1].at<uchar>(y, x);
@@ -130,8 +130,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
         tempMat = abs(ctimgs[1] - ctimgs[0]);
         int whitePixels = 0;
 
-        for (int x = 0; x < 320; ++x) {
-            for (int y = 0; y < 240; ++y) {
+        for (int x = 0; x < pwidth; ++x) {
+            for (int y = 0; y < pheight; ++y) {
                 //access the pixel
                 intensity0 = (int) tempMat.at<uchar>(y, x);
 
