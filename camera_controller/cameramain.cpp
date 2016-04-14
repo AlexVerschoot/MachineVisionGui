@@ -6,6 +6,7 @@
 #include <ctime>
 #include <string.h>
 #include <memory.h>
+#include <math.h>
 
 
 //TODO remove the namespaces and do everything individually
@@ -92,7 +93,6 @@ void  CameraMain::main_camera_thread(int * exit, int * frames){
 
 void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
     //imshow("RaspiCamTest", ctimgs[1]);
-    /*
     //TODO implement a max amount of threads, to prevent lagging behind
     //initiate the variable changed_pixels and ensure the value is 0
     int changed_pixels = 0;
@@ -120,10 +120,15 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
     if (changed_pixels > SENSITIVITY) {
         amount_detected++;
         amount_detected_thread = amount_detected;
-        std::cout << "Motion detected " << to_string(amount_detected_thread) << std::endl;
+
+        //display the amount of changed pixels on the image
+
+
+
 
         cv::Mat tempMat;
         tempMat = abs(ctimgs[1] - ctimgs[0]);
+        int whitePixels = 0;
 
         for (int x = 0; x < 320; ++x) {
             for (int y = 0; y < 240; ++y) {
@@ -131,12 +136,22 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
                 intensity0 = (int) tempMat.at<uchar>(y, x);
 
                 if (intensity0 > 25) {
+                    whitePixels++;
                     tempMat.at<uchar>(y, x) = (uchar) 255;
                 } else {
                     tempMat.at<uchar>(y, x) = (uchar) 0;
                 }
             }
         }
+
+        double diameter = sqrt((double(changed_pixels)/2) / 3.14159265358979323846);
+        std::cout << "Motion detected " << to_string(amount_detected_thread) << std::endl;
+
+        std::cout << "total : " << changed_pixels << "        diameter : " << diameter<< std::endl;
+        putText(tempMat, "t: " + to_string(changed_pixels) + " d: " + to_string(diameter), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
+
+        /*
+
 
         // smooth it, otherwise a lot of false circles may be detected
         GaussianBlur(tempMat, tempMat, Size(9, 9), 2, 2);
@@ -154,19 +169,19 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
             //display the shown radius
             putText(tempMat, "radius : " + to_string(radius), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
         }
-
+        */
         //save the image to a picture
-        //cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
+        cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
 
 
 
         //cv::flip(ctimgs[0], ctimgs[0], -1);
-        //cv::imwrite("/root/Pictures/motion_detected_" + to_string(amount_detected) +".jpg",tempMat);
+        //cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected) +".jpg",tempMat);
 
         //imshow("RaspiCamTest", tempMat);
         //motorController->gotoPosition(amount_detected % 16);
     }
-    */
+
 }
 
 

@@ -122,6 +122,10 @@ void MainWindow::updateTime()
     long framerateNew = mainCamera->getFrames();
     ui->label_framerate->setText(number.number(framerateNew-framerateOld)+" fps");
     framerateOld = framerateNew;
+
+    //the image
+    QPixmap pix("/home/pi/Pictures/motion_detected_7");
+        ui->labelPicture->setPixmap(pix);
 }
 
 
