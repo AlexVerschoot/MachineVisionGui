@@ -39,8 +39,9 @@ void  CameraMain::main_camera_thread(int * exit, int * frames){
     int done = 0;
     //remove all already existing pictures from previous sessions
     for (int var = 1; done == 0; var++) {
+        //TODO put the save location in a more central place"
         std::string s = "/home/pi/Pictures/motion_detected_" + to_string(var) + ".jpg";
-        cout << s << endl;
+        //cout << s << endl;
         const char * filename = s.c_str();
         if(std::remove(filename) != 0){
         done = 1;
@@ -202,4 +203,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
 //give back how many frames have been shown
 long CameraMain::getFrames(){
     return frames;
+}
+
+int CameraMain::getAmountDetected(){
+    return amount_detected;
 }

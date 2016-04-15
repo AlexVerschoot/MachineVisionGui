@@ -15,6 +15,7 @@ public:
     void stopCamera();
     void startCamera();
     long getFrames();
+    int getAmountDetected();
 
 
 private:

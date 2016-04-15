@@ -124,7 +124,11 @@ void MainWindow::updateTime()
     framerateOld = framerateNew;
 
     //the image
-    QPixmap pix("/home/pi/Pictures/motion_detected_7");
+    //TODO put the save location in a more central place"
+    std::string s = "/home/pi/Pictures/motion_detected_"+std::to_string(mainCamera->getAmountDetected())+".jpg";
+    //cout << s << endl;
+    const char * filename = s.c_str();
+    QPixmap pix(filename);
         ui->labelPicture->setPixmap(pix);
 }
 
