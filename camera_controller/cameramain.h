@@ -18,9 +18,9 @@ public:
 
 
 private:
-    void comparison_thread(cv::Mat ctimgs[2], int pwidth, int pheight);
+    void comparison_thread(cv::Mat ctimgs[2]);
 
-    void main_camera_thread(int * exit, int * frames, int pwidth, int pheight);
+    void main_camera_thread(int * exit, int * frames);
 
 
     //motion detection values
@@ -32,8 +32,8 @@ private:
     unsigned long amount_detected = 0;
 
     //widht and height of the frames
-    int pwidth = 320;
-    int pheight = 240;
+    const static int pwidth = 320;
+    const static int pheight = 240;
 
 
     int frames = 0;

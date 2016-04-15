@@ -7,6 +7,7 @@
 #include <string.h>
 #include <memory.h>
 #include <math.h>
+#include <cstdio>
 
 
 //TODO remove the namespaces and do everything individually
@@ -14,7 +15,7 @@ using namespace cv;
 using namespace std;
 CameraMain::CameraMain()
 {
-    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames, pwidth, pheight);
+    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames);
     t1.detach();
 
 }
@@ -34,7 +35,10 @@ void CameraMain::stopCamera(){
     std::cout<<"exit should now be one"<<std::endl;
 }
 
-void  CameraMain::main_camera_thread(int * exit, int * frames, int pwidth, int pheight){
+void  CameraMain::main_camera_thread(int * exit, int * frames){
+    //remove all already existing pictures from previous sessions
+    std::remove("/home/pi/Pictures/motion_detected_*");
+
     *exit = 1;
 
     //TODO start the camera detection
@@ -75,7 +79,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, int pwidth, int p
             }
 
             //imshow("RaspiCamTest", imgs[1]);
-            std::thread t1(&CameraMain::comparison_thread ,this, imgs, pwidth, pheight);
+            std::thread t1(&CameraMain::comparison_thread ,this, imgs);
             t1.detach();
             *frames = *frames + 1; //*frames++ did some strange things, so changed it to this. Don't know why it did strange stuff.
         }
@@ -91,7 +95,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, int pwidth, int p
 
 //detect differences in the frame
 
-void CameraMain::comparison_thread(cv::Mat ctimgs[2], int pwidth, int pheight) {
+void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
     //imshow("RaspiCamTest", ctimgs[1]);
     //TODO implement a max amount of threads, to prevent lagging behind
     //initiate the variable changed_pixels and ensure the value is 0
