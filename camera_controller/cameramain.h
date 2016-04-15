@@ -2,6 +2,7 @@
 #define CAMERAMAIN_H
 
 //camera control
+#include "motor_controller/MotorControllerSec.h"
 #include "RaspiCamCV.h"
 #include <opencv/cv.h>
 #include <thread>
@@ -10,7 +11,7 @@
 class CameraMain
 {
 public:
-    CameraMain();
+    CameraMain(MotorControllerSec * motorController);
     ~CameraMain();
     void stopCamera();
     void startCamera();
@@ -19,9 +20,9 @@ public:
 
 
 private:
-    void comparison_thread(cv::Mat ctimgs[2]);
+    void comparison_thread(cv::Mat ctimgs[2], MotorControllerSec * motorController);
 
-    void main_camera_thread(int * exit, int * frames);
+    void main_camera_thread(int * exit, int * frames, MotorControllerSec * motorController);
 
 
     //motion detection values

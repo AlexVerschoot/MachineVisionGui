@@ -13,10 +13,15 @@
 //TODO remove the namespaces and do everything individually
 using namespace cv;
 using namespace std;
-CameraMain::CameraMain()
+CameraMain::CameraMain(MotorControllerSec * motorController)
 {
-    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames);
+    motorController->gotoPosition(8);
+
+
+    std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames, motorController);
     t1.detach();
+
+
 
 }
 
@@ -35,7 +40,7 @@ void CameraMain::stopCamera(){
     std::cout<<"exit should now be one"<<std::endl;
 }
 
-void  CameraMain::main_camera_thread(int * exit, int * frames){
+void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSec * motorController){
     int done = 0;
     //remove all already existing pictures from previous sessions
     for (int var = 1; done == 0; var++) {
@@ -90,7 +95,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames){
             }
 
             //imshow("RaspiCamTest", imgs[1]);
-            std::thread t1(&CameraMain::comparison_thread ,this, imgs);
+            std::thread t1(&CameraMain::comparison_thread ,this, imgs, motorController);
             t1.detach();
             *frames = *frames + 1; //*frames++ did some strange things, so changed it to this. Don't know why it did strange stuff.
         }
@@ -106,7 +111,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames){
 
 //detect differences in the frame
 
-void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
+void CameraMain::comparison_thread(cv::Mat ctimgs[2], MotorControllerSec * motorController) {
     //imshow("RaspiCamTest", ctimgs[1]);
     //TODO implement a max amount of threads, to prevent lagging behind
     //initiate the variable changed_pixels and ensure the value is 0
@@ -187,7 +192,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2]) {
         */
         //save the image to a picture
         cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
-
+        motorController->gotoPosition(amount_detected_thread%16);
+        cout << "motor now moving to position" << amount_detected_thread %16 << endl;
 
 
         //cv::flip(ctimgs[0], ctimgs[0], -1);

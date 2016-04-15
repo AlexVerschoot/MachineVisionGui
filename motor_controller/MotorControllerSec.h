@@ -16,6 +16,8 @@
 class MotorControllerSec {
 private:
 	SerialPort * serialPort;
+
+    int busy = 0;
 public:
 	MotorControllerSec();
 	virtual ~MotorControllerSec();

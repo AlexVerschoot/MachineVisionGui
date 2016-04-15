@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     timer.setInterval(1000);
     timer.start();
     QTimer::singleShot(1, this, SLOT(startMotor()));
-    mainCamera = new CameraMain();
 }
 
 MainWindow::~MainWindow()
@@ -141,6 +140,8 @@ void MainWindow::on_servoMotorControl_valueChanged(int value)
 void MainWindow::startMotor(){
     //TODO make a settings menu where this can be redone
     motorController = new MotorControllerSec();
+
+    mainCamera = new CameraMain(motorController);
 }
 
 
