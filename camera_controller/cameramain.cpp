@@ -36,8 +36,18 @@ void CameraMain::stopCamera(){
 }
 
 void  CameraMain::main_camera_thread(int * exit, int * frames){
+    int done = 0;
     //remove all already existing pictures from previous sessions
-    std::remove("/home/pi/Pictures/motion_detected_*");
+    for (int var = 1; done == 0; var++) {
+        std::string s = "/home/pi/Pictures/motion_detected_" + to_string(var) + ".jpg";
+        cout << s << endl;
+        const char * filename = s.c_str();
+        if(std::remove(filename) != 0){
+        done = 1;
+        }
+            ;
+    }
+
 
     *exit = 1;
 
