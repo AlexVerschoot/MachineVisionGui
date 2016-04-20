@@ -123,7 +123,7 @@ QTabBar::tab:only-one {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -215,6 +215,12 @@ background: #eee;
 border: 1px solid #aaa;
 border-radius: 4px;
 }</string>
+      </property>
+      <property name="maximum">
+       <number>9</number>
+      </property>
+      <property name="pageStep">
+       <number>1</number>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>

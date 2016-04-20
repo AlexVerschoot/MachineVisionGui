@@ -7,6 +7,7 @@
 #include <iostream>
 
 
+
 //TODO remove the namespaces and do everything individually
 using namespace cv;
 using namespace std;
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     timer.setInterval(1000);
     timer.start();
     QTimer::singleShot(1, this, SLOT(startMotor()));
+    ardo = new ArduinoCom();
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +40,7 @@ void MainWindow::on_launcherStartButton_clicked()
     std::cout<<"launcher should now start"<<std::endl;
 
     mainCamera->startCamera();
+    ardo->send(0);
 }
 
 void MainWindow::on_launcherStopButton_clicked()
@@ -48,12 +51,14 @@ void MainWindow::on_launcherStopButton_clicked()
 
     //TODO stop the camera detection
     mainCamera->stopCamera();
+    ardo->send(1);
 }
 
 void MainWindow::on_launcherSpeedControl_valueChanged(int value)
 {
     //TODO include some serial communication with the arduino
-    std::cout<<"speed in % : " <<value<<std::endl;
+    std::cout<<"speed : " <<value<<std::endl;
+    ardo->send(2, value);
 
 }
 

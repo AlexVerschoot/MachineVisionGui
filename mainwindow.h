@@ -6,6 +6,8 @@
 //Motor control
 #include "motor_controller/MotorControllerSec.h"
 #include "camera_controller/cameramain.h"
+#include "I2C_controller/arduinocom.h"
+
 
 
 
@@ -52,6 +54,9 @@ private:
 
     //the camera
     CameraMain * mainCamera;
+
+    //the communication to the arduino
+    ArduinoCom* ardo;
 
 };
 
