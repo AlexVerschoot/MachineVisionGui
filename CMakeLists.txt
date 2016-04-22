@@ -6,6 +6,7 @@ find_package( OpenCV REQUIRED )
 
 #QT
 find_package(Qt5Widgets)
+find_package(Qt5LinguistTools)
 
 SET(CMAKE_EXE_LINKER_FLAGS "-lpthread")
 include_directories(/opt/vc/include)
@@ -25,6 +26,8 @@ set(CMAKE_INCLUDE_PATH)
 find_package(Qt5Core REQUIRED)
 
 qt5_add_resources(QT_RESOURCE qtimages.qrc)
+#QT5_CREATE_TRANSLATION(languages/Translation_en.ts  languages/Translation_nl.ts)
+#qt5_add_translation(languages/Translation_en.ts  languages/Translation_nl.ts)
 
 # This allows files that are not compiled to be added to a project
 add_custom_target(MyProjectSources SOURCES

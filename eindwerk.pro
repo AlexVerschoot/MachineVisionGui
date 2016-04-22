@@ -26,12 +26,13 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     motor_controller/motorcontrollerstartdialog.ui
 
+TRANSLATIONS = languages/Translation_en.ts  languages/Translation_nl.ts languages/Translation_fi.ts languages/Translation_fr.ts
 
 target.path = /home/pi
 INSTALLS += target
 
 RESOURCES += \
-    images.qrc
+    qtimages.qrc
 
 DISTFILES += \
     images/icon_stop.png \
