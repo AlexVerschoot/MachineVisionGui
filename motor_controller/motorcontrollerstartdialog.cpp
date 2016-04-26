@@ -8,7 +8,7 @@ MotorControllerStartDialog::MotorControllerStartDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     show();
-    QTimer::singleShot(1, this, SLOT(startSerialCommuncation()));
+    QTimer::singleShot(100, this, SLOT(startSerialCommuncation()));
     exec();
 
 
