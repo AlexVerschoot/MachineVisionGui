@@ -138,10 +138,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         amount_detected_thread = amount_detected;
 
         //display the amount of changed pixels on the image
-        std::cout << "black pixels : " << changed_pixels << std::endl;
-
-        //todo : single out single pixels
-
+        //std::cout << "black pixels : " << changed_pixels << std::endl;
 
         cv::Mat tempMat;
         ctimgs.copyTo(tempMat);
@@ -169,8 +166,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
                     siblingPoints += (int) tempMat.at<uchar>(y, x-1);
                 }
 
-                //if the intensity is bigger than the min required, and atleast one pixel next to it is also activated, make it white.
-                if (intensity < THRESHOLD && siblingPoints < THRESHOLD) {
+                //if the intensity is bigger than the min required, and atleast two pixels next to it is also activated, make it white.
+                if (intensity < THRESHOLD && siblingPoints < THRESHOLD*3) {
                     //whitePixels++;
                     tempMat.at<uchar>(y, x) = (uchar) 255;
                 } else {
@@ -180,7 +177,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         }
 
         // smooth it, otherwise a lot of false circles may be detected
-        GaussianBlur(tempMat, tempMat, Size(25, 25), 2, 2);
+        GaussianBlur(tempMat, tempMat, Size(15, 15), 2, 2);
 
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
@@ -196,7 +193,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
             }
         }
 
-        GaussianBlur(tempMat, tempMat, Size(25, 25), 2, 2);
+        GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
     for (int x = 0; x < pwidth; ++x) {
         for (int y = 0; y < pheight; ++y) {
             //access the pixel
@@ -211,10 +208,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         }
     }
 
-    GaussianBlur(tempMat, tempMat, Size(25, 25), 2, 2);
+    GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
 
-
-        /*
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
                 //access the pixel
@@ -232,18 +227,17 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         //double diameter = sqrt((double(changed_pixels)) / 3.14159265358979323846);
         double diameter = sqrt((double(whitePixels)) / 3.14159265358979323846);
 
-        std::cout << "Motion detected " << to_string(amount_detected_thread) << std::endl;
+        std::cout << "Motion detected " << to_string(amount_detected_thread) << "        diameter : " << diameter << std::endl;
 
-        std::cout << "total : " << whitePixels << "        diameter : " << diameter<< std::endl;
-        putText(tempMat, "t: " + to_string(whitePixels) + " d: " + to_string(diameter), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
-*/
+        //std::cout << "total : " << whitePixels << "        diameter : " << diameter<< std::endl;
+        //putText(tempMat, "t: " + to_string(whitePixels) + " d: " + to_string(diameter), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
 
 
 
         // smooth it, otherwise a lot of false circles may be detected
         //GaussianBlur(tempMat, tempMat, Size(9, 9), 2, 2);
-        /*vector<Vec3f> circles;
-        HoughCircles(tempMat, circles, CV_HOUGH_GRADIENT, 1, tempMat.rows / 4, 5, 25, 5, 0);
+        vector<Vec3f> circles;
+        HoughCircles(tempMat, circles, CV_HOUGH_GRADIENT, 1, tempMat.rows / 4, 5, 5, 40, 80);
         cvtColor(tempMat, tempMat, CV_GRAY2RGB);
 
         for (size_t i = 0; i < circles.size(); i++) {
@@ -256,7 +250,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
             //display the shown radius
             putText(tempMat, "radius : " + to_string(radius), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
         }
-        */
+
         //save the image to a picture
         cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
         //motorController->gotoPosition(amount_detected_thread%16);
@@ -267,6 +261,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
         //imshow("RaspiCamTest", tempMat);
         //motorController->gotoPosition(amount_detected % 16);
+        last_frame = amount_detected_thread;
     }
 
 }

@@ -39,6 +39,7 @@ private:
 
 
     int frames = 0;
+    int last_frame = 0;
 
     //an int to stop
     int exit = 0;
