@@ -49,9 +49,9 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
         //cout << s << endl;
         const char * filename = s.c_str();
         if(std::remove(filename) != 0){
-        done = 1;
+            done = 1;
         }
-            ;
+        ;
     }
 
 
@@ -137,6 +137,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         amount_detected++;
         amount_detected_thread = amount_detected;
 
+
         //display the amount of changed pixels on the image
         //std::cout << "black pixels : " << changed_pixels << std::endl;
 
@@ -150,7 +151,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
                 //access the pixel
                 intensity = (int) tempMat.at<uchar>(y, x);
                 //an int to see how mutch pixels are in close proximity
-                int siblingPoints=0;
+                /*int siblingPoints=0;
                 if (y>0){
                     siblingPoints += (int) tempMat.at<uchar>(y-1, x);
                 }
@@ -172,43 +173,12 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
                     tempMat.at<uchar>(y, x) = (uchar) 255;
                 } else {
                     tempMat.at<uchar>(y, x) = (uchar) 0;
-                }
+                }*/
             }
         }
 
         // smooth it, otherwise a lot of false circles may be detected
-        GaussianBlur(tempMat, tempMat, Size(15, 15), 2, 2);
-
-        for (int x = 0; x < pwidth; ++x) {
-            for (int y = 0; y < pheight; ++y) {
-                //access the pixel
-                intensity = (int) tempMat.at<uchar>(y, x);
-
-                if (intensity > THRESHOLD*4) {
-                    //whitePixels++;
-                    tempMat.at<uchar>(y, x) = (uchar) 255;
-                } else {
-                    tempMat.at<uchar>(y, x) = (uchar) 0;
-                }
-            }
-        }
-
-        GaussianBlur(tempMat, tempMat, Size(15, 15), 2, 2);
-    for (int x = 0; x < pwidth; ++x) {
-        for (int y = 0; y < pheight; ++y) {
-            //access the pixel
-            intensity = (int) tempMat.at<uchar>(y, x);
-
-            if (intensity > THRESHOLD) {
-                //whitePixels++;
-                tempMat.at<uchar>(y, x) = (uchar) 255;
-            } else {
-                tempMat.at<uchar>(y, x) = (uchar) 0;
-            }
-        }
-    }
-
-    GaussianBlur(tempMat, tempMat, Size(15, 15), 2, 2);
+        GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
 
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
@@ -216,7 +186,6 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
                 intensity = (int) tempMat.at<uchar>(y, x);
 
                 if (intensity > THRESHOLD) {
-                    whitePixels++;
                     tempMat.at<uchar>(y, x) = (uchar) 255;
                 } else {
                     tempMat.at<uchar>(y, x) = (uchar) 0;
@@ -224,8 +193,45 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
             }
         }
 
+        vector<Vec3f> circles;
+        HoughCircles(tempMat, circles, CV_HOUGH_GRADIENT, 1, tempMat.rows / 4, 5, 5, 40, 80);
+        //cvtColor(tempMat, tempMat, CV_GRAY2RGB);
+
+        int radius;
+
+        for (size_t i = 0; i < circles.size(); i++) {
+            Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+            radius = cvRound(circles[i][2]);
+            /*
+            // draw the circle center
+            circle(tempMat, center, 3, Scalar(0, 255, 0), -1, 8, 0);
+            // draw the circle outline
+            circle(tempMat, center, radius, Scalar(0, 0, 255), 3, 8, 0);
+            //display the shown radius
+            //putText(tempMat, "radius : " + to_string(radius), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
+
+*/
+
+            //now we have a circle (and got rid of all unwanted elements), only look inside that circle
+            cv::Mat mask = cv::Mat::zeros(pheight,pwidth, CV_8U);
+            circle(mask, center, radius, cv::Scalar(255), -1);
+            for(unsigned int y=0; y<pheight; ++y){
+                for(unsigned int x=0; x<pwidth; ++x){
+                    if(mask.at<uchar>(y,x) >  (uchar) 128)
+                    {
+                        //only pixels inside the circle
+                        //access the pixel
+                        intensity = (int) tempMat.at<uchar>(y, x);
+
+                        if (intensity > THRESHOLD) {
+                            whitePixels++;
+                        }
+                    }
+                }
+            }
+        }
         //double diameter = sqrt((double(changed_pixels)) / 3.14159265358979323846);
-        double diameter = sqrt((double(whitePixels)) / 3.14159265358979323846);
+        //double diameter = sqrt((double(whitePixels)) / 3.14159265358979323846);
 
 
         //std::cout << "total : " << whitePixels << "        diameter : " << diameter<< std::endl;
@@ -233,27 +239,19 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
 
 
-        // smooth it, otherwise a lot of false circles may be detected
-        //GaussianBlur(tempMat, tempMat, Size(9, 9), 2, 2);
-        vector<Vec3f> circles;
-        HoughCircles(tempMat, circles, CV_HOUGH_GRADIENT, 1, tempMat.rows / 4, 5, 5, 40, 80);
-        cvtColor(tempMat, tempMat, CV_GRAY2RGB);
 
-        for (size_t i = 0; i < circles.size(); i++) {
-            Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-            int radius = cvRound(circles[i][2]);
-            // draw the circle center
-            circle(tempMat, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-            // draw the circle outline
-            circle(tempMat, center, radius, Scalar(0, 0, 255), 3, 8, 0);
-            //display the shown radius
-            putText(tempMat, "radius : " + to_string(radius), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
-
-            std::cout << "Motion detected " << to_string(amount_detected_thread) << "        radius : " << radius << std::endl;
-
+        //say that i'm done with the heavy stuff
+        while (amount_detected_thread-1 != finished_detected){
+            usleep(100);
         }
+        finished_detected = amount_detected_thread;
+
+        std::stringstream msg;
+        msg << "Motion detected " << to_string(amount_detected_thread) << "        total : " << whitePixels << std::endl;
+        std::cout << msg.str();
 
 
+        putText(tempMat, " total: " + to_string(whitePixels), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
 
         //save the image to a picture
         cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
@@ -265,8 +263,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
         //imshow("RaspiCamTest", tempMat);
         //motorController->gotoPosition(amount_detected % 16);
-        last_frame = amount_detected_thread;
     }
+
 
 }
 

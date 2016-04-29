@@ -123,7 +123,7 @@ QTabBar::tab:only-one {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -355,9 +355,9 @@ padding : 0px;</string>
      <widget class="QSlider" name="servoMotorControl">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>340</y>
-        <width>500</width>
+        <x>20</x>
+        <y>350</y>
+        <width>241</width>
         <height>27</height>
        </rect>
       </property>
@@ -435,10 +435,10 @@ border-radius: 4px;
      <widget class="QLabel" name="labelPicture">
       <property name="geometry">
        <rect>
-        <x>440</x>
-        <y>30</y>
-        <width>320</width>
-        <height>240</height>
+        <x>280</x>
+        <y>10</y>
+        <width>480</width>
+        <height>360</height>
        </rect>
       </property>
       <property name="text">
@@ -450,7 +450,7 @@ border-radius: 4px;
        <rect>
         <x>20</x>
         <y>20</y>
-        <width>200</width>
+        <width>125</width>
         <height>25</height>
        </rect>
       </property>
@@ -463,7 +463,7 @@ border-radius: 4px;
        <string notr="true">Color : #888;</string>
       </property>
       <property name="text">
-       <string>Small balls :</string>
+       <string>17mm :</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -474,7 +474,7 @@ border-radius: 4px;
        <rect>
         <x>20</x>
         <y>60</y>
-        <width>200</width>
+        <width>125</width>
         <height>25</height>
        </rect>
       </property>
@@ -487,7 +487,7 @@ border-radius: 4px;
        <string notr="true">Color : #888;</string>
       </property>
       <property name="text">
-       <string>Medium balls :</string>
+       <string>19 mm :</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -498,7 +498,7 @@ border-radius: 4px;
        <rect>
         <x>20</x>
         <y>100</y>
-        <width>200</width>
+        <width>125</width>
         <height>25</height>
        </rect>
       </property>
@@ -511,7 +511,7 @@ border-radius: 4px;
        <string notr="true">Color : #888;</string>
       </property>
       <property name="text">
-       <string>Large balls :</string>
+       <string>22 mm :</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -522,7 +522,7 @@ border-radius: 4px;
        <rect>
         <x>20</x>
         <y>140</y>
-        <width>200</width>
+        <width>125</width>
         <height>25</height>
        </rect>
       </property>
@@ -535,7 +535,7 @@ border-radius: 4px;
        <string notr="true">Color : #888;</string>
       </property>
       <property name="text">
-       <string>Total balls :</string>
+       <string>Total :</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -544,9 +544,9 @@ border-radius: 4px;
      <widget class="QLabel" name="label_sizeSmall">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>150</x>
         <y>20</y>
-        <width>200</width>
+        <width>100</width>
         <height>25</height>
        </rect>
       </property>
@@ -568,9 +568,9 @@ border-radius: 4px;
      <widget class="QLabel" name="label_sizeMedium">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>150</x>
         <y>60</y>
-        <width>200</width>
+        <width>100</width>
         <height>25</height>
        </rect>
       </property>
@@ -592,9 +592,9 @@ border-radius: 4px;
      <widget class="QLabel" name="label_sizeLarge">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>150</x>
         <y>100</y>
-        <width>200</width>
+        <width>100</width>
         <height>25</height>
        </rect>
       </property>
@@ -616,9 +616,9 @@ border-radius: 4px;
      <widget class="QLabel" name="label_sizeAll">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>150</x>
         <y>140</y>
-        <width>200</width>
+        <width>100</width>
         <height>25</height>
        </rect>
       </property>

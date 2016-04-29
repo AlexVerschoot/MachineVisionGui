@@ -49,7 +49,7 @@ private:
     //for the framerate
     long framerateOld= 0;
 
-    static int interval = 1000;
+    const static int interval = 1000;
 
     //the servo
     MotorControllerSec * motorController;
