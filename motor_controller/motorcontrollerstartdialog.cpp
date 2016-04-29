@@ -29,7 +29,7 @@ void MotorControllerStartDialog::startSerialCommuncation(){
         serialPort.readPort();
     }
     ui->label_motorInstructions->setText("Motor initializing...");
-    ui->progress_started->setValue(90);
+    ui->progress_started->setValue(75);
 
     //write drive enable
     sleep(1);

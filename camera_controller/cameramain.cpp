@@ -193,7 +193,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
             }
         }
 
-        GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
+        GaussianBlur(tempMat, tempMat, Size(15, 15), 2, 2);
     for (int x = 0; x < pwidth; ++x) {
         for (int y = 0; y < pheight; ++y) {
             //access the pixel
@@ -208,7 +208,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         }
     }
 
-    GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
+    GaussianBlur(tempMat, tempMat, Size(15, 15), 2, 2);
 
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
@@ -227,7 +227,6 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         //double diameter = sqrt((double(changed_pixels)) / 3.14159265358979323846);
         double diameter = sqrt((double(whitePixels)) / 3.14159265358979323846);
 
-        std::cout << "Motion detected " << to_string(amount_detected_thread) << "        diameter : " << diameter << std::endl;
 
         //std::cout << "total : " << whitePixels << "        diameter : " << diameter<< std::endl;
         //putText(tempMat, "t: " + to_string(whitePixels) + " d: " + to_string(diameter), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
@@ -249,7 +248,12 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
             circle(tempMat, center, radius, Scalar(0, 0, 255), 3, 8, 0);
             //display the shown radius
             putText(tempMat, "radius : " + to_string(radius), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
+
+            std::cout << "Motion detected " << to_string(amount_detected_thread) << "        radius : " << radius << std::endl;
+
         }
+
+
 
         //save the image to a picture
         cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);

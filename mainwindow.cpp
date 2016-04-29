@@ -21,9 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //a timer that counts every second
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
-    timer.setInterval(1000);
+    timer.setInterval(interval);
     timer.start();
-    QTimer::singleShot(1, this, SLOT(startMotor()));
+    QTimer::singleShot(100, this, SLOT(startMotor()));
     ardo = new ArduinoCom();
 }
 
@@ -124,7 +124,7 @@ void MainWindow::updateTime()
 
     //the framerate
     long framerateNew = mainCamera->getFrames();
-    ui->label_framerate->setText(number.number(framerateNew-framerateOld)+" fps");
+    ui->label_framerate->setText(number.number((framerateNew-framerateOld)*(1000/interval))+" fps");
     framerateOld = framerateNew;
 
     //the image
