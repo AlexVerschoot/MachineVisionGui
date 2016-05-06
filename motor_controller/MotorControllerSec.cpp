@@ -11,14 +11,24 @@
 MotorControllerSec::MotorControllerSec() {
 
 
-    MotorControllerStartDialog mcstd;
+    //MotorControllerStartDialog mcstd;
 
     serialPort = new SerialPort();
+
+    initialize();
 
 }
 
 MotorControllerSec::~MotorControllerSec() {
     delete serialPort;
+}
+
+void MotorControllerSec::initialize(){
+    //write drive enable
+    sleep(1);
+    unsigned char temp[] = "SRF+ \r\n";
+    serialPort->writePort(temp);
+    sleep(1);
 }
 
 void MotorControllerSec::gotoPosition(int position) {

@@ -146,12 +146,13 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
         //tempMat = abs(ctimgs[1] - ctimgs[0]);
         int whitePixels = 0;
 
+        /*
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
                 //access the pixel
                 intensity = (int) tempMat.at<uchar>(y, x);
                 //an int to see how mutch pixels are in close proximity
-                /*int siblingPoints=0;
+                int siblingPoints=0;
                 if (y>0){
                     siblingPoints += (int) tempMat.at<uchar>(y-1, x);
                 }
@@ -173,12 +174,12 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
                     tempMat.at<uchar>(y, x) = (uchar) 255;
                 } else {
                     tempMat.at<uchar>(y, x) = (uchar) 0;
-                }*/
+                }
             }
-        }
+        }*/
 
         // smooth it, otherwise a lot of false circles may be detected
-        GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
+        //GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
 
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
@@ -223,7 +224,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
                         //access the pixel
                         intensity = (int) tempMat.at<uchar>(y, x);
 
-                        if (intensity > THRESHOLD) {
+                        if (intensity > 1) {
                             whitePixels++;
                         }
                     }

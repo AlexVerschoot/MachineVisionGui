@@ -8,7 +8,7 @@ find_package( OpenCV REQUIRED )
 find_package(Qt5Widgets)
 find_package(Qt5LinguistTools)
 
-SET(CMAKE_EXE_LINKER_FLAGS "-lpthread")
+SET(CMAKE_EXE_LINKER_FLAGS "-lpthread -lwiringPi")
 include_directories(/opt/vc/include)
 include_directories(/opt/vc/include/EGL)
 include_directories(/opt/vc/userland/host_applications/linux/libs/bcm_host/include)
@@ -33,6 +33,7 @@ qt5_add_resources(QT_RESOURCE qtimages.qrc)
 add_custom_target(MyProjectSources SOURCES
 mainwindow.ui
 motor_controller/motorcontrollerstartdialog.ui
+EmergencyStop.ui
 )
 
 
@@ -40,7 +41,7 @@ add_library(mainwindow mainwindow.cpp )
 target_link_libraries (mainwindow Qt5::Widgets)
 
 
-add_executable(MyProject main.cpp motor_controller/MotorControllerSec.cpp motor_controller/SerialPort.cpp motor_controller/motorcontrollerstartdialog.cpp camera_controller/RaspiCamCV.c camera_controller/RaspiCLI.c camera_controller/RaspiCamControl.c camera_controller/cameramain I2C_controller/arduinocom.cpp ${QT_RESOURCE})
+add_executable(MyProject main.cpp motor_controller/MotorControllerSec.cpp motor_controller/SerialPort.cpp motor_controller/motorcontrollerstartdialog.cpp camera_controller/RaspiCamCV.c camera_controller/RaspiCLI.c camera_controller/RaspiCamControl.c camera_controller/cameramain I2C_controller/arduinocom.cpp EmergencyStop.cpp ${QT_RESOURCE})
 target_link_libraries (MyProject mainwindow)
 target_link_libraries(MyProject m /opt/vc/lib/libmmal_core.so /opt/vc/lib/libmmal_util.so /opt/vc/lib/libmmal_vc_client.so /opt/vc/lib/libvcos.so /opt/vc/lib/libbcm_host.so /opt/vc/lib/libGLESv2.so /opt/vc/lib/libEGL.so  ${OpenCV_LIBS})
 

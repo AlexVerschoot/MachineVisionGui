@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
-
+#include <wiringPi.h>
 
 
 //TODO remove the namespaces and do everything individually
@@ -18,7 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    wiringPiSetup () ;
+    /*pinMode (28, INPUT) ;
+    //for when it starts up with the button pressed
+    if(!digitalRead(28)){
+        emergencyStopPressed();
+    }*/
+    //set up the interrupts
+    //wiringPiISR (28, INT_EDGE_FALLING, &MainWindow::emergencyStopPressed);
     //a timer that counts every second
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
     timer.setInterval(interval);
@@ -133,7 +140,7 @@ void MainWindow::updateTime()
     //cout << s << endl;
     const char * filename = s.c_str();
     QPixmap pix(filename);
-        ui->labelPicture->setPixmap(pix);
+    ui->labelPicture->setPixmap(pix);
 }
 
 
@@ -149,5 +156,33 @@ void MainWindow::startMotor(){
     mainCamera = new CameraMain(motorController);
 }
 
+/*
+void MainWindow::emergencyStop(){
+    if(!digitalRead(28)){
+        if(!emergency){
+            emergency = 1;
+            std::cout<<"emergency stop detected"<<std::endl;
+            EmergencyStop stoppie;
+
+        }
+    } else{
+        if(emergency){
+            emergency = 0;
+        }
+    }
 
 
+}
+
+*/
+
+/*void MainWindow::emergencyStopPressed(){
+    EmergencyStop stoppie;
+    stoppie.newEmergency();
+}
+*/
+/*
+void MainWindow::emergencyStopReleased(){
+    stoppie->emergencyGone();
+}
+*/

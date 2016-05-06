@@ -25,6 +25,7 @@ public:
 
 	 */
 	void gotoPosition(int position);
+    void initialize();
 };
 
 #endif /* MOTORCONTROLLERSEC_H_ */

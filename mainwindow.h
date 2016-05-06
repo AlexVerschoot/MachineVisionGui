@@ -8,6 +8,8 @@
 #include "camera_controller/cameramain.h"
 #include "I2C_controller/arduinocom.h"
 
+#include "EmergencyStop.h"
+
 
 
 
@@ -39,10 +41,16 @@ private slots:
 
     void startMotor();
 
+    //static void emergencyStopPressed();
+    //static void emergencyStopReleased();
+
 private:
 
     QTimer timer;
+    QTimer emergencyTimer;
+    int emergency = 0;
     Ui::MainWindow *ui;
+
 
     //for the cpu info
     long double a[5][4], b[5][4], loadavg;
