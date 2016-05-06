@@ -17,12 +17,15 @@ public:
     void startCamera();
     long getFrames();
     int getAmountDetected();
+    int getLastDetected();
 
 
 private:
     void comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorController);
 
     void main_camera_thread(int * exit, int * frames, MotorControllerSec * motorController);
+
+    int getSize(int whitePixels);
 
 
     //motion detection values
@@ -40,6 +43,22 @@ private:
 
     int frames = 0;
     int finished_detected = 0;
+
+    struct motionFrame{
+        int frames;
+        int whites;
+        int motiondetected;
+        bool done;
+    }last_detected;
+
+    const static int smallMax = 2350;
+    const static int bigMin = 2750;
+
+    int small = 0;
+    int medium = 0;
+    int big = 0;
+
+
 
     //an int to stop
     int exit = 0;
