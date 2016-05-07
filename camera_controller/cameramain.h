@@ -19,6 +19,12 @@ public:
     int getAmountDetected();
     int getLastDetected();
 
+    int getAmountofSmalls();
+    int getAmountofMediums();
+    int getAmountofBigs();
+
+
+
 
 private:
     void comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorController);
@@ -30,7 +36,7 @@ private:
 
     //motion detection values
     //the minimum value to consider the pixel as different
-    const int THRESHOLD = 2;
+    const int THRESHOLD = 3;
     //the amount of pixels that need to be different
     const int SENSITIVITY = 100; //10 with a resolution of 320*240
     //remembers the total amount of detected motions
@@ -51,8 +57,8 @@ private:
         bool done;
     }last_detected;
 
-    const static int smallMax = 2350;
-    const static int bigMin = 2750;
+    const static int smallMax = 2050;
+    const static int bigMin = 2500;
 
     int small = 0;
     int medium = 0;

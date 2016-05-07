@@ -15,7 +15,7 @@ using namespace cv;
 using namespace std;
 CameraMain::CameraMain(MotorControllerSec * motorController)
 {
-    motorController->gotoPosition(8);
+    motorController->gotoPosition(0);
 
 
     std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames, motorController);
@@ -233,6 +233,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
             last_detected.frames = current_frame;
             last_detected.done = false;
             last_detected.motiondetected = amount_detected_thread;
+            last_detected.whites = whitePixels;
+
 
 
             std::stringstream msg;
@@ -257,8 +259,22 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
 
     } else {
-        if (last_detected.done == false){
+        if (last_detected.done == false && last_detected.frames<current_frame-10){
+            std::stringstream msg;
+            msg << "done detecting" << "           current frame:" <<current_frame << std::endl;
+            std::cout << msg.str();
             last_detected.done = true;
+            if (last_detected.whites<smallMax){
+                small++;
+                motorController->gotoPosition(1);
+            } else if(last_detected.whites>bigMin){
+                big++;
+                motorController->gotoPosition(2);
+            } else {
+                medium++;
+                motorController->gotoPosition(0);
+
+            }
 
         }
     }
@@ -280,6 +296,25 @@ int CameraMain::getLastDetected(){
     return last_detected.motiondetected;
 }
 
-int CameraMain::getSize(){
+int CameraMain::getSize(int whitePixels){
+    if (whitePixels<smallMax){
+        return 0;
+    } else if(whitePixels>bigMin){
+        return 2;
+    } else {
+        return 1;
+    }
 
+}
+
+int CameraMain::getAmountofSmalls(){
+    return small;
+}
+
+int CameraMain::getAmountofMediums(){
+    return medium;
+}
+
+int CameraMain::getAmountofBigs(){
+    return big;
 }

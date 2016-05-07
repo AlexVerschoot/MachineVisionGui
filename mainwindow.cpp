@@ -141,6 +141,14 @@ void MainWindow::updateTime()
     const char * filename = s.c_str();
     QPixmap pix(filename);
     ui->labelPicture->setPixmap(pix);
+
+    //the amount detected
+    ui->label_sizeLarge->setText(number.number(mainCamera->getAmountofBigs()));
+    ui->label_sizeMedium->setText(number.number(mainCamera->getAmountofMediums()));
+    ui->label_sizeSmall->setText(number.number(mainCamera->getAmountofSmalls()));
+    ui->label_sizeAll->setText(number.number(mainCamera->getAmountofSmalls()+mainCamera->getAmountofMediums()+mainCamera->getAmountofBigs()));
+
+
 }
 
 
