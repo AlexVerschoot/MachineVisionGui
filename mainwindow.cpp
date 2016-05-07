@@ -136,7 +136,7 @@ void MainWindow::updateTime()
 
     //the image
     //TODO put the save location in a more central place"
-    std::string s = "/home/pi/Pictures/motion_detected_"+std::to_string(mainCamera->getAmountDetected())+".jpg";
+    std::string s = "/home/pi/Pictures/motion_detected_"+std::to_string(mainCamera->getLastDetected())+".jpg";
     //cout << s << endl;
     const char * filename = s.c_str();
     QPixmap pix(filename);

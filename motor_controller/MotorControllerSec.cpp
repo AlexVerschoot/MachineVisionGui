@@ -6,7 +6,6 @@
  */
 
 #include "MotorControllerSec.h"
-#include "motorcontrollerstartdialog.h"
 
 MotorControllerSec::MotorControllerSec() {
 
