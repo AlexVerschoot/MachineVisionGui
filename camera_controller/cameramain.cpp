@@ -220,6 +220,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
                 //save the image to a picture
                 cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
+                cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
+
                 //motorController->gotoPosition(amount_detected_thread%16);
                 //cout << "motor now moving to position" << amount_detected_thread %16 << endl;
 
@@ -246,6 +248,8 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
             //save the image to a picture
             cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
+            cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
+
             //motorController->gotoPosition(amount_detected_thread%16);
             //cout << "motor now moving to position" << amount_detected_thread %16 << endl;
 

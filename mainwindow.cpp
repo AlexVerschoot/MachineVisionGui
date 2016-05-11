@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    wiringPiSetup () ;
+    //wiringPiSetup () ;
     /*pinMode (28, INPUT) ;
     //for when it starts up with the button pressed
     if(!digitalRead(28)){
@@ -28,10 +28,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //wiringPiISR (28, INT_EDGE_FALLING, &MainWindow::emergencyStopPressed);
     //a timer that counts every second
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+    connect(&timer, SIGNAL(timeout()), this, SLOT(emergencyStopReleased()));
     timer.setInterval(interval);
     timer.start();
     QTimer::singleShot(100, this, SLOT(startMotor()));
+    //QTimer::singleShot(1000, this, SLOT(emergencyStopReleased()));
+
     ardo = new ArduinoCom();
+
+    stoppie = new EmergencyStop();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -162,6 +169,8 @@ void MainWindow::startMotor(){
     motorController = new MotorControllerSec();
 
     mainCamera = new CameraMain(motorController);
+
+
 }
 
 /*
@@ -184,13 +193,37 @@ void MainWindow::emergencyStop(){
 
 */
 
-/*void MainWindow::emergencyStopPressed(){
-    EmergencyStop stoppie;
-    stoppie.newEmergency();
+void MainWindow::emergencyStopPressed(){
+    if(emergency == 0){
+        emergency = 1;
+        mainCamera->stopCamera();
+        ardo->send(1);
+        stoppie->newEmergency();
+
+
+    }
 }
-*/
-/*
+
+
 void MainWindow::emergencyStopReleased(){
-    stoppie->emergencyGone();
+    if(waitingForRelease==0){
+        if(emergency == 1){
+            waitingForRelease=1;
+
+            //wait until the emergency is over
+            std::cout<<"waiting until emergency is over"<<std::endl;
+
+            while(emergency == 1){
+                usleep(100000);
+                if(digitalRead(28)){
+                    emergency=0;
+                    std::cout<<"emergency ended"<<std::endl;
+                    stoppie->emergencyGone(motorController);
+                    sleep(1);
+                }
+            }
+        }
+        waitingForRelease=0;
+    }
 }
-*/
+

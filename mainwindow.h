@@ -26,7 +26,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     int runningTime = 0;
+    void emergencyStopPressed();
     ~MainWindow();
+
+
 
 private slots:
     void on_launcherStartButton_clicked();
@@ -41,14 +44,17 @@ private slots:
 
     void startMotor();
 
-    //static void emergencyStopPressed();
-    //static void emergencyStopReleased();
+    void emergencyStopReleased();
+
+
+
 
 private:
 
     QTimer timer;
     QTimer emergencyTimer;
     int emergency = 0;
+    int waitingForRelease = 0;
     Ui::MainWindow *ui;
 
 
@@ -67,6 +73,9 @@ private:
 
     //the communication to the arduino
     ArduinoCom* ardo;
+
+    //for the emergency stop
+    EmergencyStop * stoppie;
 
 };
 

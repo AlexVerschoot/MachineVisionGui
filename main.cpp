@@ -4,19 +4,22 @@
 #include "EmergencyStop.h"
 #include <wiringPi.h>
 
+MainWindow * w;
+
+
 
 void emergencyStop(void) {
-    EmergencyStop stoppie;
-    //stoppie.newEmergency();
+    w->emergencyStopPressed();
 }
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    wiringPiSetup () ;
     wiringPiISR (28, INT_EDGE_FALLING, &emergencyStop);
+    w = new MainWindow();
     //show the interface
-    w.showFullScreen();
+    w->showFullScreen();
 
     return a.exec();
 }

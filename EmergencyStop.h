@@ -2,6 +2,7 @@
 #define EMERGENCYSTOP_H
 
 #include <QDialog>
+#include "motor_controller/MotorControllerSec.h"
 
 namespace Ui {
 class EmergencyStop;
@@ -15,12 +16,17 @@ public:
     explicit EmergencyStop(QWidget *parent = 0);
     ~EmergencyStop();
     void newEmergency();
-    void emergencyGone();
+    void emergencyGone(MotorControllerSec * motorController);
 
 
 
 private:
     Ui::EmergencyStop *ui;
+
+    MotorControllerSec * motorController;
+
+    int stopping = 0;
+
 
 private slots:
 

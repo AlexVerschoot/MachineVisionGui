@@ -2,6 +2,7 @@
 #include "ui_EmergencyStop.h"
 #include "QTimer"
 #include "unistd.h"
+#include "iostream"
 
 
 
@@ -10,10 +11,7 @@ EmergencyStop::EmergencyStop(QWidget *parent) :
     ui(new Ui::EmergencyStop)
 {
     ui->setupUi(this);
-    ui->label_emergencytimer->setVisible(false);
-    show();
     //QTimer::singleShot(100, this, SLOT(startSerialCommuncation()));
-    exec();
 }
 
 EmergencyStop::~EmergencyStop()
@@ -22,19 +20,28 @@ EmergencyStop::~EmergencyStop()
 }
 
 void EmergencyStop::newEmergency(){
-
+    //show();
+    exec();
 }
 
-void EmergencyStop::emergencyGone(){
-    ui->label_stopInstructions->setText("Emergency averted. Please wait ");
-    ui->label_emergencytimer->setVisible(true);
+void EmergencyStop::emergencyGone(MotorControllerSec * motorController){
+    //if(stopping ==0){
+    //    stopping = 1;
+    motorController->initialize();
 
 
     QString text;
-    for (int var = 0; var < 10; ++var) {
-        text =(10-var)+" s";
-        ui->label_emergencytimer->setText(text);
+    for (int var = 0; var < 5; ++var) {
+        std::cout<<var<<std::endl;
         sleep(1);
     }
+
+
+    motorController->initialize();
+
+
+
+    QTimer::singleShot(1, this, SLOT(accept()));
+    //}
 }
 
