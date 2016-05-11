@@ -17,31 +17,58 @@ public:
     void startCamera();
     long getFrames();
     int getAmountDetected();
+    int getLastDetected();
+
+    int getAmountofSmalls();
+    int getAmountofMediums();
+    int getAmountofBigs();
+
+
 
 
 private:
-    void comparison_thread(cv::Mat ctimgs[2], MotorControllerSec * motorController);
+    void comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorController);
 
     void main_camera_thread(int * exit, int * frames, MotorControllerSec * motorController);
+
+    int getSize(int whitePixels);
 
 
     //motion detection values
     //the minimum value to consider the pixel as different
-    const int THRESHOLD = 30;
+    const int THRESHOLD = 3;
     //the amount of pixels that need to be different
-    const int SENSITIVITY = 10;
+    const int SENSITIVITY = 750; //10 with a resolution of 320*240
     //remembers the total amount of detected motions
     unsigned long amount_detected = 0;
 
     //widht and height of the frames
-    const static int pwidth = 320;
-    const static int pheight = 240;
+    const static int pwidth = 480; //320
+    const static int pheight = 360; //240
 
 
     int frames = 0;
+    int finished_detected = 0;
+
+    struct motionFrame{
+        int frames;
+        int whites;
+        int motiondetected;
+        bool done;
+    }last_detected;
+
+    const static int smallMax = 2050;
+    const static int bigMin = 2500;
+
+    int small = 0;
+    int medium = 0;
+    int big = 0;
+
+
 
     //an int to stop
     int exit = 0;
+
 
 };
 

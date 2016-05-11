@@ -15,7 +15,7 @@ using namespace cv;
 using namespace std;
 CameraMain::CameraMain(MotorControllerSec * motorController)
 {
-    motorController->gotoPosition(8);
+    motorController->gotoPosition(0);
 
 
     std::thread t1(&CameraMain::main_camera_thread ,this, &exit, &frames, motorController);
@@ -49,9 +49,9 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
         //cout << s << endl;
         const char * filename = s.c_str();
         if(std::remove(filename) != 0){
-        done = 1;
+            done = 1;
         }
-            ;
+        ;
     }
 
 
@@ -68,10 +68,8 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
     free(config);
 
 
-    //a boolean to know if the program has already initialized (read: if image1 is already an image)
+    //a boolean to know if the program has already initialized
     bool initialized = false;
-    cv::Mat imgs [2];
-
 
     //cvNamedWindow("RaspiCamTest", 1);
     while(1){
@@ -82,22 +80,20 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
 
             //cvShowImage("RaspiCamTest", img);
             if (initialized) {
-                imgs[1].copyTo(imgs[0]);
-                image.copyTo(imgs[1]);
+                //imshow("RaspiCamTest", imgs[1]);
+                std::thread t1(&CameraMain::comparison_thread ,this, image, motorController);
+                t1.detach();
             } else {
                 //ensure camera is warmed up
                 if (*frames > 5) {
                     initialized = true;
                     cout << "initialization done" << endl;
                 }
-                image.copyTo(imgs[0]);
-                image.copyTo(imgs[1]);
-            }
 
-            //imshow("RaspiCamTest", imgs[1]);
-            std::thread t1(&CameraMain::comparison_thread ,this, imgs, motorController);
-            t1.detach();
+            }
             *frames = *frames + 1; //*frames++ did some strange things, so changed it to this. Don't know why it did strange stuff.
+
+
         }
         usleep(1000);
     }
@@ -111,51 +107,70 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
 
 //detect differences in the frame
 
-void CameraMain::comparison_thread(cv::Mat ctimgs[2], MotorControllerSec * motorController) {
+void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorController) {
+    int current_frame = frames;
     //imshow("RaspiCamTest", ctimgs[1]);
     //TODO implement a max amount of threads, to prevent lagging behind
     //initiate the variable changed_pixels and ensure the value is 0
     int changed_pixels = 0;
     //declaring this here helps more than 10 fps
-    int intensity0;
-    int intensity1;
+    int intensity;
     int difference;
     unsigned long amount_detected_thread;
+
+
+
+
     for (int x = 0; x < pwidth; ++x) {
         for (int y = 0; y < pheight; ++y) {
             //access the pixel
-            intensity0 = (int) ctimgs[0].at<uchar>(y, x);
-            intensity1 = (int) ctimgs[1].at<uchar>(y, x);
-            //only check the green value
-            //the difference
-            difference = abs(intensity1 - intensity0);
+            intensity = (int) ctimgs.at<uchar>(y, x);
 
-
-            if (difference > THRESHOLD) {
+            if (intensity < THRESHOLD) {
                 changed_pixels++;
             }
         }
     }
 
+
+
     if (changed_pixels > SENSITIVITY) {
         amount_detected++;
         amount_detected_thread = amount_detected;
 
+
         //display the amount of changed pixels on the image
-
-
-
+        //std::cout << "black pixels : " << changed_pixels << std::endl;
 
         cv::Mat tempMat;
-        tempMat = abs(ctimgs[1] - ctimgs[0]);
+        ctimgs.copyTo(tempMat);
+        //tempMat = abs(ctimgs[1] - ctimgs[0]);
         int whitePixels = 0;
+
 
         for (int x = 0; x < pwidth; ++x) {
             for (int y = 0; y < pheight; ++y) {
                 //access the pixel
-                intensity0 = (int) tempMat.at<uchar>(y, x);
+                intensity = (int) tempMat.at<uchar>(y, x);
+                //an int to see how mutch pixels are in close proximity
+                int siblingPoints=0;
+                if (y>0){
+                    siblingPoints += (int) tempMat.at<uchar>(y-1, x);
+                }
+                if(x>0){
+                    siblingPoints += (int) tempMat.at<uchar>(y, x-1);
 
-                if (intensity0 > 25) {
+                }
+                if(y<pheight){
+                    siblingPoints += (int) tempMat.at<uchar>(y+1, x);
+                }
+
+                if(x<pwidth){
+                    siblingPoints += (int) tempMat.at<uchar>(y, x-1);
+                }
+
+                //if the intensity is bigger than the min required, and atleast two pixels next to it is also activated, make it white.
+                if (intensity < THRESHOLD && siblingPoints < THRESHOLD*2) {
                     whitePixels++;
                     tempMat.at<uchar>(y, x) = (uchar) 255;
                 } else {
@@ -164,44 +179,110 @@ void CameraMain::comparison_thread(cv::Mat ctimgs[2], MotorControllerSec * motor
             }
         }
 
-        double diameter = sqrt((double(changed_pixels)/2) / 3.14159265358979323846);
-        std::cout << "Motion detected " << to_string(amount_detected_thread) << std::endl;
-
-        std::cout << "total : " << changed_pixels << "        diameter : " << diameter<< std::endl;
-        putText(tempMat, "t: " + to_string(changed_pixels) + " d: " + to_string(diameter), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
-
-        /*
-
-
         // smooth it, otherwise a lot of false circles may be detected
-        GaussianBlur(tempMat, tempMat, Size(9, 9), 2, 2);
-        vector<Vec3f> circles;
-        HoughCircles(tempMat, circles, CV_HOUGH_GRADIENT, 1, tempMat.rows / 4, 5, 25, 5, 0);
-        cvtColor(tempMat, tempMat, CV_GRAY2RGB);
+        /*GaussianBlur(tempMat, tempMat, Size(5, 5), 2, 2);
 
-        for (size_t i = 0; i < circles.size(); i++) {
-            Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-            int radius = cvRound(circles[i][2]);
-            // draw the circle center
-            circle(tempMat, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-            // draw the circle outline
-            circle(tempMat, center, radius, Scalar(0, 0, 255), 3, 8, 0);
-            //display the shown radius
-            putText(tempMat, "radius : " + to_string(radius), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
+        for (int x = 0; x < pwidth; ++x) {
+            for (int y = 0; y < pheight; ++y) {
+                //access the pixel
+                intensity = (int) tempMat.at<uchar>(y, x);
+
+                if (intensity > THRESHOLD) {
+                    tempMat.at<uchar>(y, x) = (uchar) 255;
+                    whitePixels++;
+                } else {
+                    tempMat.at<uchar>(y, x) = (uchar) 0;
+                }
+            }
         }
         */
-        //save the image to a picture
-        cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
-        motorController->gotoPosition(amount_detected_thread%16);
-        cout << "motor now moving to position" << amount_detected_thread %16 << endl;
+
+        //say that i'm done with the heavy stuff
+        while (amount_detected_thread-1 != finished_detected){
+            usleep(100);
+        }
+        finished_detected = amount_detected_thread;
+        //std::cout << last_detected.frames << "                  " << current_frame << std::endl;
+
+        if(last_detected.frames  == current_frame -1){
+            last_detected.frames = current_frame;
+            if(last_detected.whites<whitePixels){
+                last_detected.whites = whitePixels;
+                last_detected.motiondetected = amount_detected_thread;
 
 
-        //cv::flip(ctimgs[0], ctimgs[0], -1);
-        //cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected) +".jpg",tempMat);
+                std::stringstream msg;
+                msg << "CompleteMotion detected " << to_string(amount_detected_thread) << "        total : " << whitePixels << "           current frame:" <<current_frame << std::endl;
+                std::cout << msg.str();
 
-        //imshow("RaspiCamTest", tempMat);
-        //motorController->gotoPosition(amount_detected % 16);
+
+                putText(tempMat, " total: " + to_string(whitePixels), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
+
+                //save the image to a picture
+                cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
+                cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
+
+                //motorController->gotoPosition(amount_detected_thread%16);
+                //cout << "motor now moving to position" << amount_detected_thread %16 << endl;
+
+
+                //cv::flip(ctimgs[0], ctimgs[0], -1);
+
+                //imshow("RaspiCamTest", tempMat);
+                //motorController->gotoPosition(amount_detected % 16);
+            }
+        } else {
+            last_detected.frames = current_frame;
+            last_detected.done = false;
+            last_detected.motiondetected = amount_detected_thread;
+            last_detected.whites = whitePixels;
+
+
+
+            std::stringstream msg;
+            msg << "FirstMotion detected " << to_string(amount_detected_thread) << "        total : " << whitePixels << "           current frame:" <<current_frame << std::endl;
+            std::cout << msg.str();
+
+
+            putText(tempMat, " total: " + to_string(whitePixels), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(200,200,250), 1, CV_AA);
+
+            //save the image to a picture
+            cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
+            cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
+
+            //motorController->gotoPosition(amount_detected_thread%16);
+            //cout << "motor now moving to position" << amount_detected_thread %16 << endl;
+
+
+            //cv::flip(ctimgs[0], ctimgs[0], -1);
+
+            //imshow("RaspiCamTest", tempMat);
+            //motorController->gotoPosition(amount_detected % 16);
+        }
+
+
+
+    } else {
+        if (last_detected.done == false && last_detected.frames<current_frame-10){
+            std::stringstream msg;
+            msg << "done detecting" << "           current frame:" <<current_frame << std::endl;
+            std::cout << msg.str();
+            last_detected.done = true;
+            if (last_detected.whites<smallMax){
+                small++;
+                motorController->gotoPosition(1);
+            } else if(last_detected.whites>bigMin){
+                big++;
+                motorController->gotoPosition(2);
+            } else {
+                medium++;
+                motorController->gotoPosition(0);
+
+            }
+
+        }
     }
+
 
 }
 
@@ -213,4 +294,31 @@ long CameraMain::getFrames(){
 
 int CameraMain::getAmountDetected(){
     return amount_detected;
+}
+
+int CameraMain::getLastDetected(){
+    return last_detected.motiondetected;
+}
+
+int CameraMain::getSize(int whitePixels){
+    if (whitePixels<smallMax){
+        return 0;
+    } else if(whitePixels>bigMin){
+        return 2;
+    } else {
+        return 1;
+    }
+
+}
+
+int CameraMain::getAmountofSmalls(){
+    return small;
+}
+
+int CameraMain::getAmountofMediums(){
+    return medium;
+}
+
+int CameraMain::getAmountofBigs(){
+    return big;
 }

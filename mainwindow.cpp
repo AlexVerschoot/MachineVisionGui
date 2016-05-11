@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
-
+#include <wiringPi.h>
+#include "timeOut.h"
 
 
 //TODO remove the namespaces and do everything individually
@@ -18,13 +19,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    //wiringPiSetup () ;
+    /*pinMode (28, INPUT) ;
+    //for when it starts up with the button pressed
+    if(!digitalRead(28)){
+        emergencyStopPressed();
+    }*/
+    //set up the interrupts
+    //wiringPiISR (28, INT_EDGE_FALLING, &MainWindow::emergencyStopPressed);
     //a timer that counts every second
     connect(&timer, SIGNAL(timeout()), this, SLOT(updateTime()));
-    timer.setInterval(1000);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(emergencyStopReleased()));
+    timer.setInterval(interval);
     timer.start();
-    QTimer::singleShot(1, this, SLOT(startMotor()));
+    QTimer::singleShot(100, this, SLOT(startMotor()));
+    //QTimer::singleShot(1000, this, SLOT(emergencyStopReleased()));
+
     ardo = new ArduinoCom();
+
+    stoppie = new EmergencyStop();
 }
 
 MainWindow::~MainWindow()
@@ -41,6 +54,10 @@ void MainWindow::on_launcherStartButton_clicked()
 
     mainCamera->startCamera();
     ardo->send(0);
+    running = true;
+    last_detected.time = runningTime;
+
+
 }
 
 void MainWindow::on_launcherStopButton_clicked()
@@ -52,6 +69,7 @@ void MainWindow::on_launcherStopButton_clicked()
     //TODO stop the camera detection
     mainCamera->stopCamera();
     ardo->send(1);
+    running = false;
 }
 
 void MainWindow::on_launcherSpeedControl_valueChanged(int value)
@@ -124,16 +142,39 @@ void MainWindow::updateTime()
 
     //the framerate
     long framerateNew = mainCamera->getFrames();
-    ui->label_framerate->setText(number.number(framerateNew-framerateOld)+" fps");
+    ui->label_framerate->setText(number.number((framerateNew-framerateOld)*(1000/interval))+" fps");
     framerateOld = framerateNew;
 
     //the image
     //TODO put the save location in a more central place"
-    std::string s = "/home/pi/Pictures/motion_detected_"+std::to_string(mainCamera->getAmountDetected())+".jpg";
+    std::string s = "/home/pi/Pictures/motion_detected_"+std::to_string(mainCamera->getLastDetected())+".jpg";
     //cout << s << endl;
     const char * filename = s.c_str();
     QPixmap pix(filename);
-        ui->labelPicture->setPixmap(pix);
+    ui->labelPicture->setPixmap(pix);
+
+    //the amount detected
+    ui->label_sizeLarge->setText(number.number(mainCamera->getAmountofBigs()));
+    ui->label_sizeMedium->setText(number.number(mainCamera->getAmountofMediums()));
+    ui->label_sizeSmall->setText(number.number(mainCamera->getAmountofSmalls()));
+    int totalDetected = mainCamera->getAmountofSmalls()+mainCamera->getAmountofMediums()+mainCamera->getAmountofBigs();
+    ui->label_sizeAll->setText(number.number(totalDetected));
+
+    //to detect if balls are launched
+    if(running){
+        //std::cout<<"total and last"<< totalDetected << "       " <<last_detected.amount<<std::endl;
+        if(totalDetected>last_detected.amount){
+            last_detected.amount = totalDetected;
+            last_detected.time = runningTime;
+        }else{
+            if(runningTime-5>last_detected.time){
+                on_launcherStopButton_clicked();
+                TimeOut tOut;
+
+            }
+        }
+    }
+
 }
 
 
@@ -147,7 +188,61 @@ void MainWindow::startMotor(){
     motorController = new MotorControllerSec();
 
     mainCamera = new CameraMain(motorController);
+
+}
+
+/*
+void MainWindow::emergencyStop(){
+    if(!digitalRead(28)){
+        if(!emergency){
+            emergency = 1;
+            std::cout<<"emergency stop detected"<<std::endl;
+            EmergencyStop stoppie;
+
+        }
+    } else{
+        if(emergency){
+            emergency = 0;
+        }
+    }
+
+
+}
+
+*/
+
+void MainWindow::emergencyStopPressed(){
+    if(emergency == 0){
+        running = false;
+        emergency = 1;
+        mainCamera->stopCamera();
+        ardo->send(1);
+        stoppie->newEmergency();
+
+
+    }
 }
 
 
+void MainWindow::emergencyStopReleased(){
+    if(waitingForRelease==0){
+        if(emergency == 1){
+            waitingForRelease=1;
+
+            //wait until the emergency is over
+            std::cout<<"waiting until emergency is over"<<std::endl;
+
+            while(emergency == 1){
+                usleep(100000);
+                if(digitalRead(28)){
+                    emergency=0;
+                    std::cout<<"emergency ended"<<std::endl;
+                    stoppie->emergencyGone(motorController);
+                    sleep(1);
+                }
+            }
+        }
+        waitingForRelease=0;
+    }
+}
 
