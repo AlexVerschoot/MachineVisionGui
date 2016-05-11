@@ -57,6 +57,12 @@ private:
     int waitingForRelease = 0;
     Ui::MainWindow *ui;
 
+    struct last_new_ball{
+        int time = 0;
+        int amount = 0;
+    } last_detected;
+
+    bool running=false;
 
     //for the cpu info
     long double a[5][4], b[5][4], loadavg;

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <wiringPi.h>
+#include "timeOut.h"
 
 
 //TODO remove the namespaces and do everything individually
@@ -37,8 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ardo = new ArduinoCom();
 
     stoppie = new EmergencyStop();
-
-
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +54,10 @@ void MainWindow::on_launcherStartButton_clicked()
 
     mainCamera->startCamera();
     ardo->send(0);
+    running = true;
+    last_detected.time = runningTime;
+
+
 }
 
 void MainWindow::on_launcherStopButton_clicked()
@@ -66,6 +69,7 @@ void MainWindow::on_launcherStopButton_clicked()
     //TODO stop the camera detection
     mainCamera->stopCamera();
     ardo->send(1);
+    running = false;
 }
 
 void MainWindow::on_launcherSpeedControl_valueChanged(int value)
@@ -153,8 +157,23 @@ void MainWindow::updateTime()
     ui->label_sizeLarge->setText(number.number(mainCamera->getAmountofBigs()));
     ui->label_sizeMedium->setText(number.number(mainCamera->getAmountofMediums()));
     ui->label_sizeSmall->setText(number.number(mainCamera->getAmountofSmalls()));
-    ui->label_sizeAll->setText(number.number(mainCamera->getAmountofSmalls()+mainCamera->getAmountofMediums()+mainCamera->getAmountofBigs()));
+    int totalDetected = mainCamera->getAmountofSmalls()+mainCamera->getAmountofMediums()+mainCamera->getAmountofBigs();
+    ui->label_sizeAll->setText(number.number(totalDetected));
 
+    //to detect if balls are launched
+    if(running){
+        //std::cout<<"total and last"<< totalDetected << "       " <<last_detected.amount<<std::endl;
+        if(totalDetected>last_detected.amount){
+            last_detected.amount = totalDetected;
+            last_detected.time = runningTime;
+        }else{
+            if(runningTime-5>last_detected.time){
+                on_launcherStopButton_clicked();
+                TimeOut tOut;
+
+            }
+        }
+    }
 
 }
 
@@ -169,7 +188,6 @@ void MainWindow::startMotor(){
     motorController = new MotorControllerSec();
 
     mainCamera = new CameraMain(motorController);
-
 
 }
 
@@ -195,6 +213,7 @@ void MainWindow::emergencyStop(){
 
 void MainWindow::emergencyStopPressed(){
     if(emergency == 0){
+        running = false;
         emergency = 1;
         mainCamera->stopCamera();
         ardo->send(1);

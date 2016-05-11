@@ -28,6 +28,7 @@ void MotorControllerSec::initialize(){
     unsigned char temp[] = "SRF+ \r\n";
     serialPort->writePort(temp);
     sleep(1);
+    gotoPosition(0);
 }
 
 void MotorControllerSec::gotoPosition(int position) {
