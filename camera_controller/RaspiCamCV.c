@@ -120,7 +120,7 @@ static void default_status(RASPIVID_STATE *state)
    state->bitrate 			= 17000000; // This is a decent default bitrate for 1080p
    state->framerate 		= VIDEO_FRAME_RATE_NUM;
    state->immutableInput 	= 1;
-   state->monochrome 		= 1;		// Gray (1) much faster than color (0)
+   state->monochrome 		= 0;		// Gray (1) much faster than color (0)
    
    // Set up the camera_parameters to default
    raspicamcontrol_set_defaults(&state->camera_parameters);
@@ -331,8 +331,14 @@ static MMAL_COMPONENT_T *create_camera_component(RASPIVID_STATE *state)
 	}
 	
 	raspicamcontrol_set_all_parameters(camera, &state->camera_parameters);
-	raspicamcontrol_set_shutter_speed(camera, 200);
-	//raspicamcontrol_set_ISO(camera,600);
+    raspicamcontrol_set_shutter_speed(camera, 100);
+    raspicamcontrol_set_ISO(camera,600);
+    raspicamcontrol_set_saturation(camera, 255);
+    raspicamcontrol_set_contrast(camera, 255);
+    raspicamcontrol_set_brightness(camera, 255);
+    raspicamcontrol_set_awb_mode(camera, MMAL_PARAM_AWBMODE_OFF);
+    raspicamcontrol_set_awb_gains(camera, 1.5, 0.5);
+    raspicamcontrol_set_exposure_mode(camera, MMAL_PARAM_EXPOSUREMODE_BACKLIGHT);
 	
 	state->camera_component = camera;
 	

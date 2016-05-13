@@ -63,7 +63,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
     config->height = pheight;
     config->bitrate = 0; // zero: leave as default
     config->framerate = 90;
-    config->monochrome = 1;
+    config->monochrome = 0;
     RaspiCamCvCapture * capture = (RaspiCamCvCapture *) raspiCamCvCreateCameraCapture2(0, config);
     free(config);
 
@@ -72,15 +72,18 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
     bool initialized = false;
 
     //cvNamedWindow("RaspiCamTest", 1);
+    //cvNamedWindow("RaspiCamTest2", 1);
+
     while(1){
         while (*exit==0){
             IplImage* img = raspiCamCvQueryFrame(capture);
             cv::Mat image = cv::cvarrToMat(img);
-
+            //extract the red channel
+            cv::extractChannel(image, image, 2);
 
             //cvShowImage("RaspiCamTest", img);
             if (initialized) {
-                //imshow("RaspiCamTest", imgs[1]);
+                //imshow("RaspiCamTest2", image);
                 std::thread t1(&CameraMain::comparison_thread ,this, image, motorController);
                 t1.detach();
             } else {
@@ -100,7 +103,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
 
 
 
-    //cvDestroyWindow("RaspiCamTest");
+    cvDestroyWindow("RaspiCamTest");
     raspiCamCvReleaseCapture(&capture);
 }
 
@@ -109,7 +112,7 @@ void  CameraMain::main_camera_thread(int * exit, int * frames, MotorControllerSe
 
 void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorController) {
     int current_frame = frames;
-    //imshow("RaspiCamTest", ctimgs[1]);
+    //imshow("RaspiCamTest", ctimgs);
     //TODO implement a max amount of threads, to prevent lagging behind
     //initiate the variable changed_pixels and ensure the value is 0
     int changed_pixels = 0;
@@ -220,7 +223,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
                 //save the image to a picture
                 cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
-                cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
+                //cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
 
                 //motorController->gotoPosition(amount_detected_thread%16);
                 //cout << "motor now moving to position" << amount_detected_thread %16 << endl;
@@ -248,7 +251,7 @@ void CameraMain::comparison_thread(cv::Mat ctimgs, MotorControllerSec * motorCon
 
             //save the image to a picture
             cv::imwrite("/home/pi/Pictures/motion_detected_" + to_string(amount_detected_thread) + ".jpg", tempMat);
-            cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
+            //cv::imwrite("/home/pi/Pictures/motion_detecteda_" + to_string(amount_detected_thread) + ".jpg", ctimgs);
 
             //motorController->gotoPosition(amount_detected_thread%16);
             //cout << "motor now moving to position" << amount_detected_thread %16 << endl;

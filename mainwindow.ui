@@ -123,7 +123,7 @@ QTabBar::tab:only-one {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -407,7 +407,7 @@ padding : 0px;</string>
        <string notr="true">Color : #888;</string>
       </property>
       <property name="text">
-       <string>20 mm :</string>
+       <string>19 mm :</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -431,7 +431,7 @@ padding : 0px;</string>
        <string notr="true">Color : #888;</string>
       </property>
       <property name="text">
-       <string>22 mm :</string>
+       <string>20 mm :</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

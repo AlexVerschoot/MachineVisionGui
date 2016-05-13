@@ -36,7 +36,7 @@ private:
 
     //motion detection values
     //the minimum value to consider the pixel as different
-    const int THRESHOLD = 3;
+    const int THRESHOLD = 5;
     //the amount of pixels that need to be different
     const int SENSITIVITY = 750; //10 with a resolution of 320*240
     //remembers the total amount of detected motions
@@ -57,8 +57,8 @@ private:
         bool done;
     }last_detected;
 
-    const static int smallMax = 2050;
-    const static int bigMin = 2500;
+    const static int smallMax = 2800;
+    const static int bigMin = 3450;
 
     int small = 0;
     int medium = 0;
